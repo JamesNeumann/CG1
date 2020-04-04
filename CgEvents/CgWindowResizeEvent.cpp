@@ -1,18 +1,18 @@
 #include "CgWindowResizeEvent.h"
 
 CgWindowResizeEvent::CgWindowResizeEvent():
-m_type(Cg::WindowResizeEvent),
-m_w(0),
-m_h(0)
+    m_type(Cg::WindowResizeEvent),
+    m_w(0),
+    m_h(0)
 {
 
 }
 
 
 CgWindowResizeEvent::CgWindowResizeEvent(Cg::EventType type,int w, int h):
-m_type(type),
-m_w(w),
-m_h(h)
+    m_type(type),
+    m_w(w),
+    m_h(h)
 {
 
 }

@@ -159,8 +159,8 @@ void CgQtGui::createOptionPanelExample1(QWidget* parent)
     mySpinBox1->setMinimum(1);
     mySpinBox1->setMaximum(50);
     mySpinBox1->setValue(3);
-   // mySpinBox1->setSuffix("   suffix");
-   // mySpinBox1->setPrefix("Prefix:  ");
+    // mySpinBox1->setSuffix("   suffix");
+    // mySpinBox1->setPrefix("Prefix:  ");
     connect(mySpinBox1, SIGNAL(valueChanged(int) ), this, SLOT(slotMySpinBox1Changed()) );
     tab1_control->addWidget(mySpinBox1);
 
@@ -257,7 +257,7 @@ void CgQtGui::slotLoadMeshFile()
 
 
 
-   QString file=  QFileDialog::getOpenFileName(this, tr("Open Obj-File"),"",tr("Model Files (*.obj)"));
+    QString file=  QFileDialog::getOpenFileName(this, tr("Open Obj-File"),"",tr("Model Files (*.obj)"));
 
 
     CgBaseEvent* e = new CgLoadObjFileEvent(Cg::LoadObjFileEvent, file.toStdString());
@@ -274,7 +274,7 @@ void CgQtGui::slotTrackballChanged()
 
 void CgQtGui::slotMyButton1Pressed()
 {
-   std::cout << "button 1 pressed " << std::endl;
+    std::cout << "button 1 pressed " << std::endl;
 
 }
 
@@ -282,14 +282,14 @@ void CgQtGui::slotMyButton1Pressed()
 void CgQtGui::mouseEvent(QMouseEvent* event)
 {
 
-   // std::cout << QApplication::keyboardModifiers() << std::endl;
+    // std::cout << QApplication::keyboardModifiers() << std::endl;
 
-  //  if(QApplication::keyboardModifiers().testFlag(Qt::ControlModifier)==true)
+    //  if(QApplication::keyboardModifiers().testFlag(Qt::ControlModifier)==true)
     //    std::cout << Cg::ControlModifier << endl;
 
 
-   if(event->type()==QEvent::MouseButtonPress)
-   {
+    if(event->type()==QEvent::MouseButtonPress)
+    {
 
 
         CgBaseEvent* e = new CgMouseEvent(Cg::CgMouseButtonPress,
@@ -297,15 +297,15 @@ void CgQtGui::mouseEvent(QMouseEvent* event)
                                           (Cg::MouseButtons)event->button());
 
         notifyObserver(e);
-   }
+    }
 
-   if(event->type()==QEvent::MouseMove)
-   {
-       CgBaseEvent* e= new CgMouseEvent(Cg::CgMouseMove,
-                                        glm::vec2(event->localPos().x() ,event->localPos().y()),
-                                        (Cg::MouseButtons)event->button());
-       notifyObserver(e);
-   }
+    if(event->type()==QEvent::MouseMove)
+    {
+        CgBaseEvent* e= new CgMouseEvent(Cg::CgMouseMove,
+                                         glm::vec2(event->localPos().x() ,event->localPos().y()),
+                                         (Cg::MouseButtons)event->button());
+        notifyObserver(e);
+    }
 
 
 
@@ -313,15 +313,15 @@ void CgQtGui::mouseEvent(QMouseEvent* event)
 
 void CgQtGui::keyPressEvent(QKeyEvent *event)
 {
-   CgBaseEvent* e= new CgKeyEvent(Cg::CgKeyPressEvent,(Cg::Key)event->key(),(Cg::KeyboardModifiers)event->nativeModifiers(),event->text().toStdString());
-   notifyObserver(e);
+    CgBaseEvent* e= new CgKeyEvent(Cg::CgKeyPressEvent,(Cg::Key)event->key(),(Cg::KeyboardModifiers)event->nativeModifiers(),event->text().toStdString());
+    notifyObserver(e);
 }
 
 
 void CgQtGui::viewportChanged(int w, int h)
 {
-     CgBaseEvent* e = new CgWindowResizeEvent(Cg::WindowResizeEvent,w,h);
-     notifyObserver(e);
+    CgBaseEvent* e = new CgWindowResizeEvent(Cg::WindowResizeEvent,w,h);
+    notifyObserver(e);
 }
 
 

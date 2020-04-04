@@ -15,11 +15,11 @@
 CgSceneControl::CgSceneControl()
 {
     m_triangle=NULL;
-     m_current_transformation=glm::mat4(1.);
-      m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
-     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
-   m_trackball_rotation=glm::mat4(1.);
-     m_triangle= new CgExampleTriangle(21);
+    m_current_transformation=glm::mat4(1.);
+    m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
+    m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
+    m_trackball_rotation=glm::mat4(1.);
+    m_triangle= new CgExampleTriangle(21);
 
 
 }
@@ -37,7 +37,7 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
     m_renderer->setSceneControl(this);
 
     if(m_triangle!=NULL)
-    m_renderer->init(m_triangle);
+        m_renderer->init(m_triangle);
 }
 
 
@@ -73,7 +73,7 @@ void CgSceneControl::renderObjects()
     m_renderer->setUniformValue("normalMatrix",normal_matrix);
 
     if(m_triangle!=NULL)
-    m_renderer->render(m_triangle);
+        m_renderer->render(m_triangle);
 
 }
 
@@ -90,7 +90,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
         CgMouseEvent* ev = (CgMouseEvent*)e;
         //std::cout << *ev << std::endl;
 
-         // hier kommt jetzt die Abarbeitung des Events hin...
+        // hier kommt jetzt die Abarbeitung des Events hin...
     }
 
 
@@ -135,9 +135,9 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
     if(e->getType() & Cg::WindowResizeEvent)
     {
-         CgWindowResizeEvent* ev = (CgWindowResizeEvent*)e;
-         std::cout << *ev <<std::endl;
-         m_proj_matrix=glm::perspective(45.0f, (float)(ev->w()) / ev->h(), 0.01f, 100.0f);
+        CgWindowResizeEvent* ev = (CgWindowResizeEvent*)e;
+        std::cout << *ev <<std::endl;
+        m_proj_matrix=glm::perspective(45.0f, (float)(ev->w()) / ev->h(), 0.01f, 100.0f);
     }
 
     if(e->getType() & Cg::LoadObjFileEvent)
@@ -154,11 +154,11 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
         std::vector<glm::vec3> pos;
         loader->getPositionData(pos);
 
-         std::vector<glm::vec3> norm;
-         loader->getNormalData(norm);
+        std::vector<glm::vec3> norm;
+        loader->getNormalData(norm);
 
-          std::vector<unsigned int> indx;
-          loader->getFaceIndexData(indx);
+        std::vector<unsigned int> indx;
+        loader->getFaceIndexData(indx);
 
 
 

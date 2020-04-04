@@ -117,7 +117,7 @@ void CgQtGLRenderWidget::render(CgBaseRenderableObject* obj)
 
     if(m_gl_buffer_objects.find(obj->getID())!=m_gl_buffer_objects.end())
     {
-         m_gl_buffer_objects[obj->getID()]->draw(obj);
+        m_gl_buffer_objects[obj->getID()]->draw(obj);
     }
 
 
@@ -126,52 +126,52 @@ void CgQtGLRenderWidget::render(CgBaseRenderableObject* obj)
 
 void CgQtGLRenderWidget::setUniformValue(std::string name,glm::mat3 val)
 {
-     if(m_attribute_locations.find(name)==m_attribute_locations.end())
-          m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
-      m_program->bind();
-      m_program->setUniformValue(m_attribute_locations[name], QMatrix3x3(glm::value_ptr(val)).transposed());
+    if(m_attribute_locations.find(name)==m_attribute_locations.end())
+        m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
+    m_program->bind();
+    m_program->setUniformValue(m_attribute_locations[name], QMatrix3x3(glm::value_ptr(val)).transposed());
 }
 
 void CgQtGLRenderWidget::setUniformValue(std::string name,glm::mat4 val)
 {
-     if(m_attribute_locations.find(name)==m_attribute_locations.end())
-          m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
-      m_program->bind();
-      m_program->setUniformValue(m_attribute_locations[name], QMatrix4x4(glm::value_ptr(val)).transposed());
+    if(m_attribute_locations.find(name)==m_attribute_locations.end())
+        m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
+    m_program->bind();
+    m_program->setUniformValue(m_attribute_locations[name], QMatrix4x4(glm::value_ptr(val)).transposed());
 }
 
 
 void CgQtGLRenderWidget::setUniformValue(std::string name,glm::vec4 val)
 {
-     if(m_attribute_locations.find(name)==m_attribute_locations.end())
-          m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
-      m_program->bind();
-      m_program->setUniformValue(m_attribute_locations[name],QVector4D(val.x,val.y,val.z,val.w));
+    if(m_attribute_locations.find(name)==m_attribute_locations.end())
+        m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
+    m_program->bind();
+    m_program->setUniformValue(m_attribute_locations[name],QVector4D(val.x,val.y,val.z,val.w));
 }
 
 
 void CgQtGLRenderWidget::setUniformValue(std::string name,glm::vec3 val)
 {
-     if(m_attribute_locations.find(name)==m_attribute_locations.end())
-          m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
-      m_program->bind();
-      m_program->setUniformValue(m_attribute_locations[name],QVector3D(val.x,val.y,val.z));
+    if(m_attribute_locations.find(name)==m_attribute_locations.end())
+        m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
+    m_program->bind();
+    m_program->setUniformValue(m_attribute_locations[name],QVector3D(val.x,val.y,val.z));
 }
 
 void CgQtGLRenderWidget::setUniformValue(std::string name,double val)
 {
-     if(m_attribute_locations.find(name)==m_attribute_locations.end())
-          m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
-      m_program->bind();
-      m_program->setUniformValue(m_attribute_locations[name],(float)val);
+    if(m_attribute_locations.find(name)==m_attribute_locations.end())
+        m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
+    m_program->bind();
+    m_program->setUniformValue(m_attribute_locations[name],(float)val);
 }
 
 void CgQtGLRenderWidget::setUniformValue(std::string name,int val)
 {
-     if(m_attribute_locations.find(name)==m_attribute_locations.end())
-          m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
-      m_program->bind();
-      m_program->setUniformValue(m_attribute_locations[name],val);
+    if(m_attribute_locations.find(name)==m_attribute_locations.end())
+        m_attribute_locations.insert(std::make_pair(name, m_program->uniformLocation(name.c_str())));
+    m_program->bind();
+    m_program->setUniformValue(m_attribute_locations[name],val);
 }
 
 
@@ -207,7 +207,7 @@ void CgQtGLRenderWidget::init(CgBaseRenderableObject* obj)
         bobj->initPointCloud((CgBasePointCloud*)obj);
     }
 
-  }
+}
 
 
 
@@ -252,14 +252,14 @@ void CgQtGLRenderWidget::initializeGL()
 
 void CgQtGLRenderWidget::setShaderSourceFiles(std::string filename_vert,std::string filename_fragment)
 {
-     if(m_program->isLinked())
-             m_program->release();
+    if(m_program->isLinked())
+        m_program->release();
 
-     m_program->removeAllShaders();
-     m_program->addShaderFromSourceFile(QOpenGLShader::Vertex,filename_vert.c_str());
-     m_program->addShaderFromSourceFile(QOpenGLShader::Fragment,filename_fragment.c_str());
-     m_program->link();
-     m_program->bind();
+    m_program->removeAllShaders();
+    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex,filename_vert.c_str());
+    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment,filename_fragment.c_str());
+    m_program->link();
+    m_program->bind();
 }
 
 
@@ -276,7 +276,7 @@ void CgQtGLRenderWidget::paintGL()
         break;
     case 2: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         break;
-     default: break;
+    default: break;
     }
 
 
@@ -287,7 +287,7 @@ void CgQtGLRenderWidget::paintGL()
     m_program->bind();
 
     if(m_scene_control!=NULL)
-    m_scene_control->renderObjects();
+        m_scene_control->renderObjects();
 
 
 
@@ -357,7 +357,7 @@ void CgQtGLRenderWidget::mouseMoveEvent(QMouseEvent *event)
 
     emit mouseEvent(event);
 
-       update();
+    update();
 }
 
 
@@ -365,44 +365,44 @@ void CgQtGLRenderWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button()&Qt::LeftButton)
     {
-     m_trackball->endDrag();
+        m_trackball->endDrag();
 
     }
-     emit mouseEvent(event);
-     update();
+    emit mouseEvent(event);
+    update();
 }
 
 
 
 void CgQtGLRenderWidget::slotCustomRotation()
 {
-     m_custom_rotation=!m_custom_rotation;
-      update();
+    m_custom_rotation=!m_custom_rotation;
+    update();
 }
 
 void CgQtGLRenderWidget::slotLighting()
 {
     m_lighting=!m_lighting;
-     update();
+    update();
 }
 
 
 void CgQtGLRenderWidget::slotPolygonPoints()
 {
     m_polygonmode=0;
-     update();
+    update();
 }
 
 
 void CgQtGLRenderWidget::slotPolygonWireframe()
 {
     m_polygonmode=1;
-     update();
+    update();
 }
 
 void CgQtGLRenderWidget::slotPolygonFilled()
 {
-   m_polygonmode=2;
+    m_polygonmode=2;
     update();
 }
 

@@ -3,7 +3,7 @@
 
 CgTrackballEvent::CgTrackballEvent()
 {
-  m_type=Cg::CgTrackballEvent;
+    m_type=Cg::CgTrackballEvent;
 }
 
 CgBaseEvent* CgTrackballEvent::clone()

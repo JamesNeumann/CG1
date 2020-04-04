@@ -3,8 +3,8 @@
 #include "CgUtils/ObjLoader.h"
 
 CgExampleTriangle::CgExampleTriangle():
-m_type(Cg::TriangleMesh),
-m_id(42)
+    m_type(Cg::TriangleMesh),
+    m_id(42)
 {
     m_vertices.push_back(glm::vec3(-0.5,0.0,0.0));
     m_vertices.push_back(glm::vec3(0.5,-0.5,0.0));
@@ -21,8 +21,8 @@ m_id(42)
 }
 
 CgExampleTriangle::CgExampleTriangle(int id):
-m_type(Cg::TriangleMesh),
-m_id(id)
+    m_type(Cg::TriangleMesh),
+    m_id(id)
 {
 
     m_vertices.push_back(glm::vec3(-0.5,0.0,0.0));
@@ -93,7 +93,7 @@ const std::vector<glm::vec3>& CgExampleTriangle::getVertexNormals() const
 
 const std::vector<glm::vec3>& CgExampleTriangle::getVertexColors() const
 {
-     return m_vertex_colors;
+    return m_vertex_colors;
 }
 
 const std::vector<glm::vec2>& CgExampleTriangle:: getVertexTexCoords() const

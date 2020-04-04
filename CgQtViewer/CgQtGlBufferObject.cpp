@@ -5,16 +5,16 @@
 #include "CgBase/CgBasePointCloud.h"
 
 CgQtGlBufferObject::CgQtGlBufferObject():
- indexbuffer(QOpenGLBuffer::IndexBuffer)
+    indexbuffer(QOpenGLBuffer::IndexBuffer)
 {
-       vertexbuffer.create();
-       normalbuffer.create();
-       indexbuffer.create();
+    vertexbuffer.create();
+    normalbuffer.create();
+    indexbuffer.create();
 }
 
 
 CgQtGlBufferObject::CgQtGlBufferObject(QOpenGLShaderProgram* program):
- indexbuffer(QOpenGLBuffer::IndexBuffer)
+    indexbuffer(QOpenGLBuffer::IndexBuffer)
 {
     m_program = program;
     vertexbuffer.create();
