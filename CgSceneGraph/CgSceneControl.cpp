@@ -5,6 +5,7 @@
 #include "CgEvents/CgWindowResizeEvent.h"
 #include "CgEvents/CgLoadObjFileEvent.h"
 #include "CgEvents/CgTrackballEvent.h"
+#include "CgEvents/CgColorChangEvent.h"
 #include "CgBase/CgBaseRenderer.h"
 #include "CgExampleTriangle.h"
 #include <iostream>
@@ -81,6 +82,10 @@ void CgSceneControl::renderObjects()
 
 void CgSceneControl::handleEvent(CgBaseEvent* e)
 {
+    if (e->getType() & Cg::CgColorChangeEvent) {
+        CgColorChangeEvent* ev = (CgColorChangeEvent*) e;
+        std::cout << *ev << std::endl;
+    }
     // die Enums sind so gebaut, dass man alle Arten von MausEvents über CgEvent::CgMouseEvent abprüfen kann,
     // siehe dazu die CgEvent enums im CgEnums.h
 

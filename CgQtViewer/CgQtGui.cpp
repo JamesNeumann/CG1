@@ -9,6 +9,7 @@
 #include "../CgEvents/CgWindowResizeEvent.h"
 #include "../CgEvents/CgLoadObjFileEvent.h"
 #include "../CgEvents/CgTrackballEvent.h"
+#include "../CgEvents/CgColorChangEvent.h"
 #include <QSlider>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -52,9 +53,15 @@ CgQtGui::CgQtGui(CgQtMainApplication *mw)
     QWidget *otheropt = new QWidget;
     createOptionPanelExample2(otheropt);
 
+    QWidget *coloropt = new QWidget;
+    createColorChangePanel(coloropt);
+
     QTabWidget* m_tabs = new QTabWidget();
-    m_tabs->addTab(opt,"&My Tab1");
-    m_tabs->addTab(otheropt,"&My Tab2");
+//    m_tabs->addTab(opt,"&My Tab1");
+//    m_tabs->addTab(otheropt,"&My Tab2");
+    m_tabs->addTab(coloropt, "&Color");
+
+
     container->addWidget(m_tabs);
 
     m_tabs->setMaximumWidth(400);
@@ -234,6 +241,56 @@ void CgQtGui::createOptionPanelExample2(QWidget* parent)
 
 }
 
+void CgQtGui::createColorChangePanel(QWidget *panel) {
+    QVBoxLayout *tab_color_control = new QVBoxLayout();
+
+    redColorSpinBox = new QSpinBox();
+    redColorSpinBox->setMinimum(0);
+    redColorSpinBox->setMaximum(255);
+    redColorSpinBox->setPrefix("RED: ");
+    connect(redColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRedColorChanged(int)));
+    tab_color_control->addWidget(redColorSpinBox);
+
+    greenColorSpinBox = new QSpinBox();
+    greenColorSpinBox->setMinimum(0);
+    greenColorSpinBox->setMaximum(255);
+    greenColorSpinBox->setPrefix("GREEN: ");
+    connect(greenColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotGreenColorChanged(int)));
+    tab_color_control->addWidget(greenColorSpinBox);
+
+    blueColorSpinBox = new QSpinBox();
+    blueColorSpinBox->setMinimum(0);
+    blueColorSpinBox->setMaximum(255);
+    blueColorSpinBox->setPrefix("BLUE: ");
+    connect(blueColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotBlueColorChanged(int)));
+    tab_color_control->addWidget(blueColorSpinBox);
+
+    panel->setLayout(tab_color_control);
+
+}
+
+
+void CgQtGui::slotRedColorChanged(int value)
+{
+    CgBaseEvent* e = new CgColorChangeEvent(Cg::CgColorChangeEvent, Cg::Red, value);
+
+    notifyObserver(e);
+
+}
+
+void CgQtGui::slotGreenColorChanged(int value)
+{
+    CgBaseEvent* e = new CgColorChangeEvent(Cg::CgColorChangeEvent, Cg::Green, value);
+
+    notifyObserver(e);
+}
+void CgQtGui::slotBlueColorChanged(int value)
+{
+    CgBaseEvent* e = new CgColorChangeEvent(Cg::CgColorChangeEvent, Cg::Blue, value);
+
+    notifyObserver(e);
+}
+
 
 
 void CgQtGui::slotButtonGroupSelectionChanged()
@@ -323,8 +380,6 @@ void CgQtGui::viewportChanged(int w, int h)
     CgBaseEvent* e = new CgWindowResizeEvent(Cg::WindowResizeEvent,w,h);
     notifyObserver(e);
 }
-
-
 
 
 CgBaseRenderer* CgQtGui::getRenderer()

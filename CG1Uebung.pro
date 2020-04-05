@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     CgEvents/CgWindowResizeEvent.cpp \
     CgEvents/CgLoadObjFileEvent.cpp \
     CgUtils/ObjLoader.cpp \
-    CgEvents/CgTrackballEvent.cpp
+    CgEvents/CgTrackballEvent.cpp \
+    CgEvents/CgColorChangEvent.cpp
 
 HEADERS += \
     CgQtViewer/CgQtGLRenderWidget.h \
@@ -45,5 +46,6 @@ HEADERS += \
     CgEvents/CgLoadObjFileEvent.h \
     CgUtils/ObjLoader.h \
     CgBase/CgBaseImage.h \
-    CgEvents/CgTrackballEvent.h
+    CgEvents/CgTrackballEvent.h \
+    CgEvents/CgColorChangEvent.h
 

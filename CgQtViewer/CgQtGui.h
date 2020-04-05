@@ -103,6 +103,11 @@ private:
     QCheckBox* myCheckBox1;
     QSpinBox* mySpinBox1;
 
+    void createColorChangePanel(QWidget* panel);
+    QSpinBox* redColorSpinBox;
+    QSpinBox* greenColorSpinBox;
+    QSpinBox* blueColorSpinBox;
+
 
 private slots:
 
@@ -120,10 +125,9 @@ private slots:
     void slotButtonGroupSelectionChanged();
     void slotLoadMeshFile();
 
-
-
-
-
+    void slotRedColorChanged(int value);
+    void slotGreenColorChanged(int value);
+    void slotBlueColorChanged(int value);
 
 };
 
