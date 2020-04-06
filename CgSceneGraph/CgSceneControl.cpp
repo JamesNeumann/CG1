@@ -9,6 +9,7 @@
 #include "CgBase/CgBaseRenderer.h"
 #include "CgExampleTriangle.h"
 #include "CgCube.h"
+#include "CgPolyline.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include "CgUtils/ObjLoader.h"
@@ -18,12 +19,22 @@ CgSceneControl::CgSceneControl()
 {
     m_triangle=NULL;
     m_cube = NULL;
+
     m_current_transformation=glm::mat4(1.);
     m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
     m_trackball_rotation=glm::mat4(1.);
     //m_triangle= new CgExampleTriangle(21);
-    m_cube = new CgCube(1);
+    m_cube = new CgCube(100);
+    m_cube->calculateFaceNormals();
+    for (int i = 0; i < m_cube->getFaceNormals().size(); i = i+2) {
+        m_polyLines.push_back(
+                    new CgPolyline(
+                        std::vector<glm::vec3> {m_cube->getFaceNormals().at(i), m_cube->getFaceNormals().at(i+1)},
+                        i)
+                    );
+    }
+
 
 }
 
@@ -34,6 +45,9 @@ CgSceneControl::~CgSceneControl()
         delete m_triangle;
     if(m_cube!=NULL)
         delete m_cube;
+    if(!m_polyLines.empty())
+        for (auto poly : m_polyLines)
+            delete poly;
 }
 
 void CgSceneControl::setRenderer(CgBaseRenderer* r)
@@ -45,6 +59,9 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
         m_renderer->init(m_triangle);
     if(m_cube!=NULL)
         m_renderer->init(m_cube);
+    if(!m_polyLines.empty())
+        for (CgPolyline* poly : m_polyLines)
+            m_renderer->init(poly);
 }
 
 
@@ -83,6 +100,9 @@ void CgSceneControl::renderObjects()
         m_renderer->render(m_triangle);
     if(m_cube!=NULL)
         m_renderer->render(m_cube);
+    if(!m_polyLines.empty())
+        for (CgPolyline* poly : m_polyLines)
+            m_renderer->render(poly);
 
 }
 

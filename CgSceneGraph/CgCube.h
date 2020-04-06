@@ -21,6 +21,7 @@ public:
     void init(std::vector<glm::vec3> arg_verts, std::vector<glm::vec3> arg_normals, std::vector<unsigned int> arg_triangle_indices);
     void init(std::string filename);
 
+    void calculateFaceNormals();
     const std::vector<glm::vec3>& getVertices() const;
     const std::vector<glm::vec3>& getVertexNormals() const;
     const std::vector<glm::vec3>& getVertexColors() const;
@@ -30,6 +31,7 @@ public:
 
     const std::vector<glm::vec3>& getFaceNormals() const;
     const std::vector<glm::vec3>& getFaceColors() const;
+
 
 private:
     std::vector<glm::vec3> m_vertices;

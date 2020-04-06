@@ -4,11 +4,13 @@
 #include "CgBase/CgObserver.h"
 #include "CgBase/CgBaseSceneControl.h"
 #include <glm/glm.hpp>
+#include <vector>
 
 class CgBaseEvent;
 class CgBaseRenderer;
 class CgExampleTriangle;
 class CgCube;
+class CgPolyline;
 
 class CgSceneControl : public CgObserver, public CgBaseSceneControl
 {
@@ -26,6 +28,7 @@ private:
 
     CgExampleTriangle* m_triangle;
     CgCube* m_cube;
+    std::vector<CgPolyline*> m_polyLines;
     glm::mat4 m_current_transformation;
     glm::mat4 m_trackball_rotation;
     glm::mat4 m_lookAt_matrix;

@@ -1,5 +1,6 @@
 #include "CgCube.h"
 #include "CgUtils/ObjLoader.h"
+#include <iostream>
 CgCube::CgCube(int id):
     m_type(Cg::TriangleMesh),
     m_id(id)
@@ -108,6 +109,17 @@ void CgCube::init( std::string filename)
     loader.getPositionData(m_vertices);
     loader.getNormalData(m_vertex_normals);
     loader.getFaceIndexData(m_triangle_indices);
+}
+
+void CgCube::calculateFaceNormals() {
+    for (int i = 0; i < m_vertex_normals.size(); i++) {
+        glm::vec3 schwerpunkt = (m_vertices.at(m_triangle_indices.at(i*3)) +
+                                 m_vertices.at(m_triangle_indices.at(i*3+1)) +
+                                 m_vertices.at(m_triangle_indices.at(i*3+2))
+                                 ) * (1/3.0f);
+        m_face_normals.push_back(schwerpunkt);
+        m_face_normals.push_back(schwerpunkt + m_vertex_normals.at(i));
+    }
 }
 
 const std::vector<glm::vec3>& CgCube::getVertices() const
