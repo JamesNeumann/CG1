@@ -71,7 +71,7 @@ void CgSceneControl::renderObjects()
     // Materialeigenschaften setzen
     // sollte ja eigentlich pro Objekt unterschiedlich sein können, naja bekommen sie schon hin....
 
-    m_renderer->setUniformValue("mycolor",glm::vec4(0.0,1.0,0.0,1.0));
+    m_renderer->setUniformValue("mycolor", glm::vec4(m_polyLines[0]->getColor(), 1.0));
 
 
     m_renderer->setUniformValue("matDiffuseColor",glm::vec4(0.35,0.31,0.09,1.0));
@@ -112,7 +112,12 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 {
     if (e->getType() & Cg::CgColorChangeEvent) {
         CgColorChangeEvent* ev = (CgColorChangeEvent*) e;
-        std::cout << *ev << std::endl;
+
+        for (CgPolyline* poly : m_polyLines) {
+            poly->setColor(ev->getColor(), ev->getValue());
+        }
+
+        m_renderer->redraw();
     }
     // die Enums sind so gebaut, dass man alle Arten von MausEvents über CgEvent::CgMouseEvent abprüfen kann,
     // siehe dazu die CgEvent enums im CgEnums.h

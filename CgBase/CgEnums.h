@@ -8,9 +8,10 @@
 #ifndef CGENUMS_H_
 #define CGENUMS_H_
 
-
+#include <glm/vec4.hpp>
 
 namespace Cg{
+static const glm::vec4 BASECOLOR = glm::vec4(0.0, 1.0, 0.0, 1.0);
 
 typedef enum EventType {
     CgMouseButtonPress              = 0x00000001,
@@ -39,8 +40,8 @@ typedef enum EventType {
 typedef enum Color {
     Red     = 0x0001001,
     Green   = 0x0001002,
-    Blue    = 0x0001003
-} Colo;
+    Blue    = 0x0001003,
+} Color;
 
 
 

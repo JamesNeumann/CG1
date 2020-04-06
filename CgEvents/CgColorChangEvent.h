@@ -2,7 +2,7 @@
 #define CGCOLORCHANGEVENT_H
 
 #include "../CgBase/CgBaseEvent.h"
-#include <iostream>>
+#include <iostream>
 
 class CgColorChangeEvent : public CgBaseEvent
 {

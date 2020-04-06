@@ -31,7 +31,6 @@
 #include <iostream>
 
 
-
 CgQtGui::CgQtGui(CgQtMainApplication *mw)
     : m_mainWindow(mw)
 {
@@ -247,6 +246,7 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     redColorSpinBox = new QSpinBox();
     redColorSpinBox->setMinimum(0);
     redColorSpinBox->setMaximum(255);
+    redColorSpinBox->setValue(Cg::BASECOLOR[0] * 255);
     redColorSpinBox->setPrefix("RED: ");
     connect(redColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRedColorChanged(int)));
     tab_color_control->addWidget(redColorSpinBox);
@@ -254,6 +254,7 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     greenColorSpinBox = new QSpinBox();
     greenColorSpinBox->setMinimum(0);
     greenColorSpinBox->setMaximum(255);
+    greenColorSpinBox->setValue(Cg::BASECOLOR[1] * 255);
     greenColorSpinBox->setPrefix("GREEN: ");
     connect(greenColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotGreenColorChanged(int)));
     tab_color_control->addWidget(greenColorSpinBox);
@@ -261,6 +262,7 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     blueColorSpinBox = new QSpinBox();
     blueColorSpinBox->setMinimum(0);
     blueColorSpinBox->setMaximum(255);
+    blueColorSpinBox->setValue(Cg::BASECOLOR[2] * 255);
     blueColorSpinBox->setPrefix("BLUE: ");
     connect(blueColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotBlueColorChanged(int)));
     tab_color_control->addWidget(blueColorSpinBox);

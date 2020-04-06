@@ -18,6 +18,8 @@ public:
     glm::vec3 getColor() const;
     unsigned int getLineWidth() const;
 
+    void setColor(Cg::Color color, int value);
+
 private:
     Cg::ObjectType m_type;
     unsigned int m_id;
