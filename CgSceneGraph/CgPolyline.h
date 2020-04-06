@@ -18,7 +18,10 @@ public:
     glm::vec3 getColor() const;
     unsigned int getLineWidth() const;
 
+    void setVertices(std::vector<glm::vec3> newVertices);
     void setColor(Cg::Color color, int value);
+
+    void applyLaneRiesenfeld(int steps);
 
 private:
     Cg::ObjectType m_type;

@@ -22,6 +22,8 @@ public:
 
     void renderObjects();
 
+
+
 private:
 
     CgBaseRenderer* m_renderer;
@@ -29,11 +31,11 @@ private:
     CgExampleTriangle* m_triangle;
     CgCube* m_cube;
     std::vector<CgPolyline*> m_polyLines;
+    CgPolyline* testPolyline;
     glm::mat4 m_current_transformation;
     glm::mat4 m_trackball_rotation;
     glm::mat4 m_lookAt_matrix;
     glm::mat4 m_proj_matrix;
-
 };
 
 #endif // CGSCENECONTROL_H

@@ -29,7 +29,7 @@ typedef enum EventType {
 
     // unused, may be changed to whatever
     CgColorChangeEvent              = 0x0001000,
-    CgSomeSpecialEvent2             = 0x0002000,
+    CgSubdivideEvent                = 0x0002000,
     CgSomeSpecialEvent3             = 0x0004000,
     CgSomeSpecialEvent4             = 0x0008000,
     CgEventGroup1                   = 0x000f000,

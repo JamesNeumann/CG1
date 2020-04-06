@@ -19,6 +19,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& os, const CgColorChangeEvent& e);
 
+    ~CgColorChangeEvent();
 
 private:
     Cg::EventType m_type;

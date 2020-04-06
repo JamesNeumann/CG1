@@ -6,6 +6,7 @@
 #include "CgEvents/CgLoadObjFileEvent.h"
 #include "CgEvents/CgTrackballEvent.h"
 #include "CgEvents/CgColorChangEvent.h"
+#include "CgEvents/CgSubdivideEvent.h"
 #include "CgBase/CgBaseRenderer.h"
 #include "CgExampleTriangle.h"
 #include "CgCube.h"
@@ -19,21 +20,23 @@ CgSceneControl::CgSceneControl()
 {
     m_triangle=NULL;
     m_cube = NULL;
-
+    testPolyline = NULL;
     m_current_transformation=glm::mat4(1.);
     m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
     m_trackball_rotation=glm::mat4(1.);
-    //m_triangle= new CgExampleTriangle(21);
-    m_cube = new CgCube(100);
-    m_cube->calculateFaceNormals();
-    for (int i = 0; i < m_cube->getFaceNormals().size(); i = i+2) {
-        m_polyLines.push_back(
-                    new CgPolyline(
-                        std::vector<glm::vec3> {m_cube->getFaceNormals().at(i), m_cube->getFaceNormals().at(i+1)},
-                        i)
-                    );
-    }
+    //    m_triangle= new CgExampleTriangle(21);
+    //    m_cube = new CgCube(100);
+    //    m_cube->calculateFaceNormals();
+    //    for (int i = 0; i < m_cube->getFaceNormals().size(); i = i+2) {
+    //        m_polyLines.push_back(
+    //                    new CgPolyline(
+    //                        std::vector<glm::vec3> {m_cube->getFaceNormals().at(i), m_cube->getFaceNormals().at(i+1)},
+    //                        i)
+    //                    );
+    //    }
+
+    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.0), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.0, -0.5, 0.0), glm::vec3(0.5, 0.5, 0.0)}, 200);
 
 
 }
@@ -48,6 +51,8 @@ CgSceneControl::~CgSceneControl()
     if(!m_polyLines.empty())
         for (auto poly : m_polyLines)
             delete poly;
+    if(testPolyline!=NULL)
+        delete testPolyline;
 }
 
 void CgSceneControl::setRenderer(CgBaseRenderer* r)
@@ -62,6 +67,8 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
     if(!m_polyLines.empty())
         for (CgPolyline* poly : m_polyLines)
             m_renderer->init(poly);
+    if(testPolyline!=NULL)
+        m_renderer->init(testPolyline);
 }
 
 
@@ -70,9 +77,10 @@ void CgSceneControl::renderObjects()
 
     // Materialeigenschaften setzen
     // sollte ja eigentlich pro Objekt unterschiedlich sein können, naja bekommen sie schon hin....
-
-    m_renderer->setUniformValue("mycolor", glm::vec4(m_polyLines[0]->getColor(), 1.0));
-
+    if (!m_polyLines.empty())
+        m_renderer->setUniformValue("mycolor", glm::vec4(m_polyLines[0]->getColor(), 1.0));
+    else
+        m_renderer->setUniformValue("mycolor", glm::vec4(Cg::BASECOLOR));
 
     m_renderer->setUniformValue("matDiffuseColor",glm::vec4(0.35,0.31,0.09,1.0));
     m_renderer->setUniformValue("lightDiffuseColor",glm::vec4(1.0,1.0,1.0,1.0));
@@ -103,26 +111,32 @@ void CgSceneControl::renderObjects()
     if(!m_polyLines.empty())
         for (CgPolyline* poly : m_polyLines)
             m_renderer->render(poly);
+    if(testPolyline!=NULL)
+        m_renderer->render(testPolyline);
 
 }
-
-
 
 void CgSceneControl::handleEvent(CgBaseEvent* e)
 {
     if (e->getType() & Cg::CgColorChangeEvent) {
         CgColorChangeEvent* ev = (CgColorChangeEvent*) e;
-
-        for (CgPolyline* poly : m_polyLines) {
-            poly->setColor(ev->getColor(), ev->getValue());
-        }
+        if(!m_polyLines.empty())
+            for (CgPolyline* poly : m_polyLines) {
+                poly->setColor(ev->getColor(), ev->getValue());
+            }
 
         m_renderer->redraw();
     }
+
+    if (e->getType() & Cg::CgSubdivideEvent) {
+        CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
+        std::cout << ev->getValue() << std::endl;
+        testPolyline->applyLaneRiesenfeld(ev->getValue());
+        m_renderer->redraw();
+    }
+
     // die Enums sind so gebaut, dass man alle Arten von MausEvents über CgEvent::CgMouseEvent abprüfen kann,
-    // siehe dazu die CgEvent enums im CgEnums.h
-
-
+    // siehe dazu die CgEvent enums im CgEnums.
     if(e->getType() & Cg::CgMouseEvent)
     {
         CgMouseEvent* ev = (CgMouseEvent*)e;
@@ -207,6 +221,4 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
     // an der Stelle an der ein Event abgearbeitet ist wird es auch gelöscht.
     delete e;
-
-
 }

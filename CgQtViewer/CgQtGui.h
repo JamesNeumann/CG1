@@ -54,6 +54,7 @@ class QCheckBox;
 class QSpinBox;
 class QMenuBar;
 class QAction;
+class QLabel;
 QT_END_NAMESPACE
 
 class CgQtGLRenderWidget;
@@ -104,9 +105,13 @@ private:
     QSpinBox* mySpinBox1;
 
     void createColorChangePanel(QWidget* panel);
+    QLabel* colorLabel;
     QSpinBox* redColorSpinBox;
     QSpinBox* greenColorSpinBox;
     QSpinBox* blueColorSpinBox;
+
+    QLabel* laneRiesenfeldLabel;
+    QSpinBox* laneRiesenfeldSpin;
 
 
 private slots:
@@ -128,6 +133,8 @@ private slots:
     void slotRedColorChanged(int value);
     void slotGreenColorChanged(int value);
     void slotBlueColorChanged(int value);
+
+    void slotSubdivideChanged(int value);
 
 };
 

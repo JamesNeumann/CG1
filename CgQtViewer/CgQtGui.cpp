@@ -10,6 +10,7 @@
 #include "../CgEvents/CgLoadObjFileEvent.h"
 #include "../CgEvents/CgTrackballEvent.h"
 #include "../CgEvents/CgColorChangEvent.h"
+#include "../CgEvents/CgSubdivideEvent.h"
 #include <QSlider>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -58,7 +59,7 @@ CgQtGui::CgQtGui(CgQtMainApplication *mw)
     QTabWidget* m_tabs = new QTabWidget();
 //    m_tabs->addTab(opt,"&My Tab1");
 //    m_tabs->addTab(otheropt,"&My Tab2");
-    m_tabs->addTab(coloropt, "&Color");
+    m_tabs->addTab(coloropt, "&Options");
 
 
     container->addWidget(m_tabs);
@@ -241,8 +242,14 @@ void CgQtGui::createOptionPanelExample2(QWidget* parent)
 }
 
 void CgQtGui::createColorChangePanel(QWidget *panel) {
+    QVBoxLayout *tab_options_control = new QVBoxLayout();
+    QLabel *optionsLabel = new QLabel("Optionen");
+    tab_options_control->addWidget(optionsLabel);
+
     QVBoxLayout *tab_color_control = new QVBoxLayout();
 
+    colorLabel = new QLabel("Color");
+    tab_options_control->addWidget(colorLabel);
     redColorSpinBox = new QSpinBox();
     redColorSpinBox->setMinimum(0);
     redColorSpinBox->setMaximum(255);
@@ -267,7 +274,29 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     connect(blueColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotBlueColorChanged(int)));
     tab_color_control->addWidget(blueColorSpinBox);
 
-    panel->setLayout(tab_color_control);
+    tab_options_control->addLayout(tab_color_control);
+
+
+    QFrame* line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    tab_options_control->addWidget(line);
+
+
+    QVBoxLayout *tab_laneRiesenfeld_control = new QVBoxLayout();
+    laneRiesenfeldLabel = new QLabel("Unterteilungsschritte");
+    tab_laneRiesenfeld_control->addWidget(laneRiesenfeldLabel);
+
+    laneRiesenfeldSpin = new QSpinBox();
+    laneRiesenfeldSpin->setMinimum(1);
+    laneRiesenfeldSpin->setMaximum(5);
+    laneRiesenfeldSpin->setValue(1);
+    connect(laneRiesenfeldSpin, SIGNAL(valueChanged(int)), this, SLOT(slotSubdivideChanged(int)));
+    tab_laneRiesenfeld_control->addWidget(laneRiesenfeldSpin);
+
+    tab_options_control->addLayout(tab_laneRiesenfeld_control);
+
+    panel->setLayout(tab_options_control);
 
 }
 
@@ -289,6 +318,12 @@ void CgQtGui::slotGreenColorChanged(int value)
 void CgQtGui::slotBlueColorChanged(int value)
 {
     CgBaseEvent* e = new CgColorChangeEvent(Cg::CgColorChangeEvent, Cg::Blue, value);
+
+    notifyObserver(e);
+}
+
+void CgQtGui::slotSubdivideChanged(int value) {
+    CgBaseEvent*  e = new CgSubdivideEvent(Cg::CgSubdivideEvent, value);
 
     notifyObserver(e);
 }

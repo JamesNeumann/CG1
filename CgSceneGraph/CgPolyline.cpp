@@ -1,5 +1,5 @@
 #include "CgPolyline.h"
-
+#include <iostream>
 CgPolyline::CgPolyline()
 {
 
@@ -18,6 +18,36 @@ void CgPolyline::setColor(Cg::Color color, int value) {
     if (color == Cg::Red) m_color.x = value / 255.0f;
     else if (color == Cg::Green) m_color.y = value / 255.0f;
     else if (color == Cg::Blue) m_color.z = value / 255.0f;
+}
+
+void CgPolyline::setVertices(std::vector<glm::vec3> newVertices) {
+    m_verticies = newVertices;
+}
+
+void CgPolyline::applyLaneRiesenfeld(int steps) {
+
+    for (int i = 0; i < steps; i++) {
+            std::vector<glm::vec3> temp (m_verticies.size());
+            temp.insert(temp.begin(), m_verticies.begin(), m_verticies.end());
+
+            for (int i = temp.size() - (temp.size() / 2) - 1; i >= 0; i--) {
+                temp.at(2 * i + 1) = temp.at(i);
+                temp.at(2 * i) =  temp.at(i);
+            }
+
+
+
+            for (int j = 0; j < temp.size() - 1; j++) {
+                temp.at(j) = ((temp.at(j) + temp.at(j + 1)) * 0.5f);
+            }
+            for (int j = 0; j < temp.size() - 1; j++) {
+                temp.at(j) = ((temp.at(j) + temp.at(j + 1)) * 0.5f);
+            }
+
+            m_verticies = temp;
+            m_verticies.pop_back();
+            m_verticies.at(m_verticies.size() - 1)  = temp.at(0);
+        }
 }
 
 CgPolyline::~CgPolyline() {
