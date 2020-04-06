@@ -20,8 +20,10 @@ public:
 
     void setVertices(std::vector<glm::vec3> newVertices);
     void setColor(Cg::Color color, int value);
-
+    void setMaxSubdivision(int value);
     void applyLaneRiesenfeld(int steps);
+
+    void reset();
 
 private:
     Cg::ObjectType m_type;
@@ -30,6 +32,11 @@ private:
     std::vector<glm::vec3> m_verticies;
     glm::vec3 m_color;
     unsigned int m_lineWidth;
+
+    int subdivided = 1;
+    int maxSubdivision = 0;
+
+    std::vector<glm::vec3> back_up_vertices;
 };
 
 inline Cg::ObjectType  CgPolyline::getType() const {return m_type;}

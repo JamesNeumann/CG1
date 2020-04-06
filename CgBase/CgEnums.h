@@ -30,7 +30,7 @@ typedef enum EventType {
     // unused, may be changed to whatever
     CgColorChangeEvent              = 0x0001000,
     CgSubdivideEvent                = 0x0002000,
-    CgSomeSpecialEvent3             = 0x0004000,
+    CgButtonClicked                 = 0x0004000,
     CgSomeSpecialEvent4             = 0x0008000,
     CgEventGroup1                   = 0x000f000,
 
@@ -43,6 +43,10 @@ typedef enum Color {
     Blue    = 0x0001003,
 } Color;
 
+typedef enum ButtonEventType {
+    MakeStep    = 0x0001101,
+    ClearSteps  = 0x0001102
+} ButtonEventType;
 
 
 typedef enum MouseButtons {

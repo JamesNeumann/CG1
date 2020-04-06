@@ -135,6 +135,8 @@ private slots:
     void slotBlueColorChanged(int value);
 
     void slotSubdivideChanged(int value);
+    void slotSchrittButtonClicked();
+    void slotClearButtonClicked();
 
 };
 

@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     CgEvents/CgColorChangEvent.cpp \
     CgSceneGraph/CgCube.cpp \
     CgSceneGraph/CgPolyline.cpp \
-    CgEvents/CgSubdivideEvent.cpp
+    CgEvents/CgSubdivideEvent.cpp \
+    CgEvents/CgButtonClickedEvent.cpp
 
 HEADERS += \
     CgQtViewer/CgQtGLRenderWidget.h \
@@ -53,5 +54,6 @@ HEADERS += \
     CgEvents/CgColorChangEvent.h \
     CgSceneGraph/CgCube.h \
     CgSceneGraph/CgPolyline.h \
-    CgEvents/CgSubdivideEvent.h
+    CgEvents/CgSubdivideEvent.h \
+    CgEvents/CgButtonClickedEvent.h
 

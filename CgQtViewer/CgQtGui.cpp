@@ -11,6 +11,7 @@
 #include "../CgEvents/CgTrackballEvent.h"
 #include "../CgEvents/CgColorChangEvent.h"
 #include "../CgEvents/CgSubdivideEvent.h"
+#include "../CgEvents/CgButtonClickedEvent.h"
 #include <QSlider>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -287,12 +288,24 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     laneRiesenfeldLabel = new QLabel("Unterteilungsschritte");
     tab_laneRiesenfeld_control->addWidget(laneRiesenfeldLabel);
 
+    QHBoxLayout* tab_laneRiesenfeld_input = new QHBoxLayout();
     laneRiesenfeldSpin = new QSpinBox();
     laneRiesenfeldSpin->setMinimum(1);
-    laneRiesenfeldSpin->setMaximum(5);
+    laneRiesenfeldSpin->setMaximum(15);
     laneRiesenfeldSpin->setValue(1);
     connect(laneRiesenfeldSpin, SIGNAL(valueChanged(int)), this, SLOT(slotSubdivideChanged(int)));
-    tab_laneRiesenfeld_control->addWidget(laneRiesenfeldSpin);
+    tab_laneRiesenfeld_input->addWidget(laneRiesenfeldSpin);
+
+    QPushButton *button = new QPushButton("Schritt");
+    connect(button, SIGNAL(released()), this, SLOT(slotSchrittButtonClicked()));
+    tab_laneRiesenfeld_input->addWidget(button);
+
+    QPushButton *clearButton = new QPushButton("Clear");
+    connect(clearButton, SIGNAL(released()), this, SLOT(slotClearButtonClicked()));
+
+    tab_laneRiesenfeld_control->addLayout(tab_laneRiesenfeld_input);
+
+    tab_laneRiesenfeld_control->addWidget(clearButton);
 
     tab_options_control->addLayout(tab_laneRiesenfeld_control);
 
@@ -328,6 +341,17 @@ void CgQtGui::slotSubdivideChanged(int value) {
     notifyObserver(e);
 }
 
+void CgQtGui::slotSchrittButtonClicked() {
+    CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::MakeStep);
+
+    notifyObserver(e);
+}
+
+void CgQtGui::slotClearButtonClicked() {
+    CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::ClearSteps);
+
+    notifyObserver(e);
+}
 
 
 void CgQtGui::slotButtonGroupSelectionChanged()

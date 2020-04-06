@@ -7,6 +7,7 @@
 #include "CgEvents/CgTrackballEvent.h"
 #include "CgEvents/CgColorChangEvent.h"
 #include "CgEvents/CgSubdivideEvent.h"
+#include "CgEvents/CgButtonClickedEvent.h"
 #include "CgBase/CgBaseRenderer.h"
 #include "CgExampleTriangle.h"
 #include "CgCube.h"
@@ -36,8 +37,7 @@ CgSceneControl::CgSceneControl()
     //                    );
     //    }
 
-    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.0), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.0, -0.5, 0.0), glm::vec3(0.5, 0.5, 0.0)}, 200);
-
+     testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.0), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, 0.0), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.0)}, 200);
 
 }
 
@@ -79,6 +79,8 @@ void CgSceneControl::renderObjects()
     // sollte ja eigentlich pro Objekt unterschiedlich sein können, naja bekommen sie schon hin....
     if (!m_polyLines.empty())
         m_renderer->setUniformValue("mycolor", glm::vec4(m_polyLines[0]->getColor(), 1.0));
+    else if (testPolyline != NULL)
+        m_renderer->setUniformValue("mycolor", glm::vec4(testPolyline->getColor(), 1.0));
     else
         m_renderer->setUniformValue("mycolor", glm::vec4(Cg::BASECOLOR));
 
@@ -124,15 +126,32 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
             for (CgPolyline* poly : m_polyLines) {
                 poly->setColor(ev->getColor(), ev->getValue());
             }
+        if (testPolyline != NULL) {
+            testPolyline->setColor(ev->getColor(), ev->getValue());
+        }
 
         m_renderer->redraw();
     }
 
     if (e->getType() & Cg::CgSubdivideEvent) {
         CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
-        std::cout << ev->getValue() << std::endl;
-        testPolyline->applyLaneRiesenfeld(ev->getValue());
-        m_renderer->redraw();
+        testPolyline->setMaxSubdivision(ev->getValue());
+
+    }
+
+    if (e->getType() & Cg::CgButtonClicked) {
+        CgButtonClickedEvent* ev = (CgButtonClickedEvent*) e;
+
+        if (ev->getButtonEventType() == Cg::MakeStep) {
+            testPolyline->applyLaneRiesenfeld(1);
+            m_renderer->init(testPolyline);
+            m_renderer->redraw();
+        } else if (ev->getButtonEventType() == Cg::ClearSteps) {
+            testPolyline->reset();
+            m_renderer->init(testPolyline);
+            m_renderer->redraw();
+        }
+
     }
 
     // die Enums sind so gebaut, dass man alle Arten von MausEvents über CgEvent::CgMouseEvent abprüfen kann,

@@ -10,7 +10,7 @@ CgPolyline::CgPolyline(std::vector<glm::vec3> args_verticies, int id):
     m_id(id)
 {
     m_verticies = args_verticies;
-    m_lineWidth = 1;
+    m_lineWidth = 3;
     m_color = Cg::BASECOLOR;
 }
 
@@ -24,9 +24,13 @@ void CgPolyline::setVertices(std::vector<glm::vec3> newVertices) {
     m_verticies = newVertices;
 }
 
+void CgPolyline::setMaxSubdivision(int value) {
+    maxSubdivision = value;
+}
 void CgPolyline::applyLaneRiesenfeld(int steps) {
-
-    for (int i = 0; i < steps; i++) {
+    if (subdivided == 1) back_up_vertices = m_verticies;
+    if (subdivided < maxSubdivision) {
+        for (int i = 0; i < steps; i++) {
             std::vector<glm::vec3> temp (m_verticies.size());
             temp.insert(temp.begin(), m_verticies.begin(), m_verticies.end());
 
@@ -35,19 +39,28 @@ void CgPolyline::applyLaneRiesenfeld(int steps) {
                 temp.at(2 * i) =  temp.at(i);
             }
 
-
-
             for (int j = 0; j < temp.size() - 1; j++) {
                 temp.at(j) = ((temp.at(j) + temp.at(j + 1)) * 0.5f);
             }
             for (int j = 0; j < temp.size() - 1; j++) {
                 temp.at(j) = ((temp.at(j) + temp.at(j + 1)) * 0.5f);
             }
+            if (m_verticies.at(0) == m_verticies.at(m_verticies.size() - 1)) {
+                m_verticies = temp;
+                m_verticies.pop_back();
+                m_verticies.at(m_verticies.size() - 1)  = temp.at(0);
+            } else {
+                m_verticies = temp;
+            }
 
-            m_verticies = temp;
-            m_verticies.pop_back();
-            m_verticies.at(m_verticies.size() - 1)  = temp.at(0);
         }
+        subdivided++;
+    }
+}
+
+void CgPolyline::reset() {
+    m_verticies = back_up_vertices;
+    subdivided = 1;
 }
 
 CgPolyline::~CgPolyline() {
