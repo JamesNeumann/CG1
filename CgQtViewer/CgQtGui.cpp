@@ -296,7 +296,9 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     connect(laneRiesenfeldSpin, SIGNAL(valueChanged(int)), this, SLOT(slotSubdivideChanged(int)));
     tab_laneRiesenfeld_input->addWidget(laneRiesenfeldSpin);
 
-    QPushButton *button = new QPushButton("Schritt");
+    button = new QPushButton();
+    QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
+    button->setText(input);
     connect(button, SIGNAL(released()), this, SLOT(slotSchrittButtonClicked()));
     tab_laneRiesenfeld_input->addWidget(button);
 
@@ -337,19 +339,28 @@ void CgQtGui::slotBlueColorChanged(int value)
 
 void CgQtGui::slotSubdivideChanged(int value) {
     CgBaseEvent*  e = new CgSubdivideEvent(Cg::CgSubdivideEvent, value);
-
+    maxSteps = value;
+    QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
+    button->setText(input);
     notifyObserver(e);
 }
 
 void CgQtGui::slotSchrittButtonClicked() {
     CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::MakeStep);
+    if (step < maxSteps) {
+        step++;
+        QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
+        button->setText(input);
+    }
 
     notifyObserver(e);
 }
 
 void CgQtGui::slotClearButtonClicked() {
     CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::ClearSteps);
-
+    step = 1;
+    QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
+    button->setText(input);
     notifyObserver(e);
 }
 

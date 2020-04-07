@@ -113,6 +113,10 @@ private:
     QLabel* laneRiesenfeldLabel;
     QSpinBox* laneRiesenfeldSpin;
 
+    int step = 1;
+    int maxSteps = 1;
+
+    QPushButton *button;
 
 private slots:
 
