@@ -37,7 +37,17 @@ CgSceneControl::CgSceneControl()
     //                    );
     //    }
 
-     testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.0), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, 0.0), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.0)}, 200);
+    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
+//        testPolyline = new CgPolyline(
+//                    std::vector<glm::vec3> {
+//                        glm::vec3(-1.5, 1.0, 0.0),
+//                        glm::vec3(0.0, 0.5, 0.0),
+//                        glm::vec3(1.5, 1.0, 0.0),
+//                        glm::vec3(0.0, -1.5, 0.0),
+//                        glm::vec3(-1.5, 1.0, 0.0)
+//                    },
+//                    300
+//                    );
 
 }
 

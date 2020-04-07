@@ -59,8 +59,11 @@ void CgPolyline::applyLaneRiesenfeld(int steps) {
 }
 
 void CgPolyline::reset() {
-    m_verticies = back_up_vertices;
-    subdivided = 1;
+    if (subdivided != 1) {
+        m_verticies = back_up_vertices;
+        subdivided = 1;
+    }
+
 }
 
 CgPolyline::~CgPolyline() {
