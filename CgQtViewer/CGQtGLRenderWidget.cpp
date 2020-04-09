@@ -92,7 +92,7 @@ QSize CgQtGLRenderWidget::minimumSizeHint() const
 
 QSize CgQtGLRenderWidget::sizeHint() const
 {
-    return QSize(400, 400);
+    return QSize(1000, 1000);
 }
 
 

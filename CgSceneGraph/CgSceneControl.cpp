@@ -12,6 +12,7 @@
 #include "CgExampleTriangle.h"
 #include "CgCube.h"
 #include "CgPolyline.h"
+#include "CgSolidOfRevolution.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include "CgUtils/ObjLoader.h"
@@ -22,6 +23,7 @@ CgSceneControl::CgSceneControl()
     m_triangle=NULL;
     m_cube = NULL;
     testPolyline = NULL;
+    testRevolution = NULL;
     m_current_transformation=glm::mat4(1.);
     m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
@@ -37,7 +39,7 @@ CgSceneControl::CgSceneControl()
     //                    );
     //    }
 
-    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
+//    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
 //        testPolyline = new CgPolyline(
 //                    std::vector<glm::vec3> {
 //                        glm::vec3(-1.5, 1.0, 0.0),
@@ -48,7 +50,8 @@ CgSceneControl::CgSceneControl()
 //                    },
 //                    300
 //                    );
-
+    testRevolution = new CgSolidOfRevolution(std::vector<glm::vec3> {glm::vec3(0.5, -1, 0.0), glm::vec3(1.5, -1.0, 0.0), glm::vec3(0.333, 1, 0.0), glm::vec3(0.5, 2.0, 0.0)}, 50, 303);
+    testRevolution->calculateVertices();
 }
 
 
@@ -63,6 +66,8 @@ CgSceneControl::~CgSceneControl()
             delete poly;
     if(testPolyline!=NULL)
         delete testPolyline;
+    if(testRevolution!=NULL)
+        delete testRevolution;
 }
 
 void CgSceneControl::setRenderer(CgBaseRenderer* r)
@@ -79,6 +84,8 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
             m_renderer->init(poly);
     if(testPolyline!=NULL)
         m_renderer->init(testPolyline);
+    if(testRevolution!=NULL)
+        m_renderer->init(testRevolution);
 }
 
 
@@ -125,6 +132,8 @@ void CgSceneControl::renderObjects()
             m_renderer->render(poly);
     if(testPolyline!=NULL)
         m_renderer->render(testPolyline);
+    if(testRevolution!=NULL)
+        m_renderer->render(testRevolution);
 
 }
 

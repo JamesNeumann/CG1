@@ -2,12 +2,13 @@
 #define CGSOLIDOFREVOLUTION_H
 
 #include "CgBase/CgBaseTriangleMesh.h"
+#include <string>
 
 class CgSolidOfRevolution : public CgBaseTriangleMesh
 {
 public:
     CgSolidOfRevolution();
-    CgSolidOfRevolution(int id);
+    CgSolidOfRevolution(std::vector<glm::vec3> curve, int rotationSegments, int id);
 
     ~CgSolidOfRevolution();
 
@@ -16,6 +17,8 @@ public:
 
     void init (std::vector<glm::vec3> arg_verts, std::vector<glm::vec3> arg_normals, std::vector<unsigned int> arg_triangle_indices);
     void init( std::string filename);
+
+    void calculateVertices();
 
     const std::vector<glm::vec3>& getVertices() const;
     const std::vector<glm::vec3>& getVertexNormals() const;
@@ -38,11 +41,15 @@ private:
     std::vector<glm::vec3> m_face_normals;
     std::vector<glm::vec3> m_face_colors;
 
+    std::vector<glm::vec3> m_curve;
+
+    int m_rotationSegments;
+
     const Cg::ObjectType m_type;
     const unsigned int m_id;
 };
 
-inline Cg::ObjectType  CgExampleTriangle::getType() const {return m_type;}
-inline unsigned int CgExampleTriangle::getID() const {return m_id;}
+inline Cg::ObjectType  CgSolidOfRevolution::getType() const {return m_type;}
+inline unsigned int CgSolidOfRevolution::getID() const {return m_id;}
 
 #endif // CGSOLIDOFREVOLUTION_H

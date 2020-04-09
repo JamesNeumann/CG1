@@ -11,6 +11,7 @@ class CgBaseRenderer;
 class CgExampleTriangle;
 class CgCube;
 class CgPolyline;
+class CgSolidOfRevolution;
 
 class CgSceneControl : public CgObserver, public CgBaseSceneControl
 {
@@ -32,6 +33,7 @@ private:
     CgCube* m_cube;
     std::vector<CgPolyline*> m_polyLines;
     CgPolyline* testPolyline;
+    CgSolidOfRevolution* testRevolution;
     glm::mat4 m_current_transformation;
     glm::mat4 m_trackball_rotation;
     glm::mat4 m_lookAt_matrix;
