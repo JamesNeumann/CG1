@@ -116,7 +116,10 @@ private:
     int step = 1;
     int maxSteps = 1;
 
-    QPushButton *button;
+    QPushButton *buttonLaneGo;
+
+    QSpinBox* revolutionSegmentsSpinBox;
+    QPushButton *buttonRevolutionGo;
 
 private slots:
 
@@ -142,6 +145,9 @@ private slots:
     void slotSchrittButtonClicked();
     void slotClearButtonClicked();
 
+
+    void slotRevolutionSegmentsChanged(int value);
+    void slotRevolutionGoClicked();
 };
 
 #endif

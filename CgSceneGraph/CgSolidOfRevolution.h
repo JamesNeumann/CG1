@@ -8,7 +8,7 @@ class CgSolidOfRevolution : public CgBaseTriangleMesh
 {
 public:
     CgSolidOfRevolution();
-    CgSolidOfRevolution(std::vector<glm::vec3> curve, int rotationSegments, int id);
+    CgSolidOfRevolution(std::vector<glm::vec3> curve, int id);
 
     ~CgSolidOfRevolution();
 
@@ -30,6 +30,10 @@ public:
     const std::vector<glm::vec3>& getFaceNormals() const;
     const std::vector<glm::vec3>& getFaceColors() const;
 
+
+    void setRotationSegments(int value);
+    void setCurve(std::vector<glm::vec3> curve);
+
 private:
     std::vector<glm::vec3> m_vertices;
     std::vector<glm::vec3> m_vertex_normals;
@@ -43,7 +47,7 @@ private:
 
     std::vector<glm::vec3> m_curve;
 
-    int m_rotationSegments;
+    int m_rotationSegments = 1;
 
     const Cg::ObjectType m_type;
     const unsigned int m_id;
@@ -51,5 +55,4 @@ private:
 
 inline Cg::ObjectType  CgSolidOfRevolution::getType() const {return m_type;}
 inline unsigned int CgSolidOfRevolution::getID() const {return m_id;}
-
 #endif // CGSOLIDOFREVOLUTION_H

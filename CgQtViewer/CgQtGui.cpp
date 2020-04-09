@@ -278,10 +278,10 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     tab_options_control->addLayout(tab_color_control);
 
 
-    QFrame* line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    tab_options_control->addWidget(line);
+    QFrame* line2 = new QFrame();
+    line2->setFrameShape(QFrame::HLine);
+    line2->setFrameShadow(QFrame::Sunken);
+    tab_options_control->addWidget(line2);
 
 
     QVBoxLayout *tab_laneRiesenfeld_control = new QVBoxLayout();
@@ -296,11 +296,11 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
     connect(laneRiesenfeldSpin, SIGNAL(valueChanged(int)), this, SLOT(slotSubdivideChanged(int)));
     tab_laneRiesenfeld_input->addWidget(laneRiesenfeldSpin);
 
-    button = new QPushButton();
+    buttonLaneGo = new QPushButton();
     QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
-    button->setText(input);
-    connect(button, SIGNAL(released()), this, SLOT(slotSchrittButtonClicked()));
-    tab_laneRiesenfeld_input->addWidget(button);
+    buttonLaneGo->setText(input);
+    connect(buttonLaneGo, SIGNAL(released()), this, SLOT(slotSchrittButtonClicked()));
+    tab_laneRiesenfeld_input->addWidget(buttonLaneGo);
 
     QPushButton *clearButton = new QPushButton("Clear");
     connect(clearButton, SIGNAL(released()), this, SLOT(slotClearButtonClicked()));
@@ -311,6 +311,26 @@ void CgQtGui::createColorChangePanel(QWidget *panel) {
 
     tab_options_control->addLayout(tab_laneRiesenfeld_control);
 
+
+
+    QFrame* line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    tab_options_control->addWidget(line);
+
+    QHBoxLayout* solidOfRevolution_cotrol = new QHBoxLayout();
+    revolutionSegmentsSpinBox = new QSpinBox();
+    revolutionSegmentsSpinBox->setMinimum(1);
+    revolutionSegmentsSpinBox->setMaximum(10000);
+    revolutionSegmentsSpinBox->setValue(1);
+    connect(revolutionSegmentsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRevolutionSegmentsChanged(int)));
+    solidOfRevolution_cotrol->addWidget(revolutionSegmentsSpinBox);
+
+    buttonRevolutionGo = new QPushButton("Generieren");
+    connect(buttonRevolutionGo, SIGNAL(released()), this, SLOT(slotRevolutionGoClicked()));
+    solidOfRevolution_cotrol->addWidget(buttonRevolutionGo);
+
+    tab_options_control->addLayout(solidOfRevolution_cotrol);
     panel->setLayout(tab_options_control);
 
 }
@@ -323,7 +343,6 @@ void CgQtGui::slotRedColorChanged(int value)
     notifyObserver(e);
 
 }
-
 void CgQtGui::slotGreenColorChanged(int value)
 {
     CgBaseEvent* e = new CgColorChangeEvent(Cg::CgColorChangeEvent, Cg::Green, value);
@@ -341,29 +360,36 @@ void CgQtGui::slotSubdivideChanged(int value) {
     CgBaseEvent*  e = new CgSubdivideEvent(Cg::CgSubdivideEvent, value);
     maxSteps = value;
     QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
-    button->setText(input);
+    buttonLaneGo->setText(input);
     notifyObserver(e);
 }
-
 void CgQtGui::slotSchrittButtonClicked() {
     CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::MakeStep);
     if (step < maxSteps) {
         step++;
         QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
-        button->setText(input);
+        buttonLaneGo->setText(input);
     }
 
     notifyObserver(e);
 }
-
 void CgQtGui::slotClearButtonClicked() {
     CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::ClearSteps);
     step = 1;
     QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
-    button->setText(input);
+    buttonLaneGo->setText(input);
     notifyObserver(e);
 }
 
+void CgQtGui::slotRevolutionSegmentsChanged(int value) {
+    std::cout << "FUnktioniert" << std::endl;
+    CgBaseEvent* e = new CgSubdivideEvent(Cg::CgRevolutionSegmentsEvent, value);
+    notifyObserver(e);
+}
+void CgQtGui::slotRevolutionGoClicked() {
+    CgBaseEvent* e = new CgButtonClickedEvent(Cg::CgButtonClicked, Cg::GenerateRevolution);
+    notifyObserver(e);
+}
 
 void CgQtGui::slotButtonGroupSelectionChanged()
 {
@@ -374,13 +400,10 @@ void CgQtGui::slotMySpinBox1Changed()
 {
 
 }
-
 void CgQtGui::slotMyCheckBox1Changed()
 {
 
 }
-
-
 void CgQtGui::slotLoadMeshFile()
 {
 

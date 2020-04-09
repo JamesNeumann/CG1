@@ -31,7 +31,7 @@ typedef enum EventType {
     CgColorChangeEvent              = 0x0001000,
     CgSubdivideEvent                = 0x0002000,
     CgButtonClicked                 = 0x0004000,
-    CgSomeSpecialEvent4             = 0x0008000,
+    CgRevolutionSegmentsEvent       = 0x0008000,
     CgEventGroup1                   = 0x000f000,
 
     // feel free to add whatever you like
@@ -45,7 +45,8 @@ typedef enum Color {
 
 typedef enum ButtonEventType {
     MakeStep    = 0x0001101,
-    ClearSteps  = 0x0001102
+    ClearSteps  = 0x0001102,
+    GenerateRevolution = 0x0001103
 } ButtonEventType;
 
 

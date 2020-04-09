@@ -25,6 +25,10 @@ CgSceneControl::CgSceneControl()
     testPolyline = NULL;
     testRevolution = NULL;
     m_current_transformation=glm::mat4(1.);
+    glm::mat4 scalemat = glm::mat4(1.);
+    scalemat = glm::scale(scalemat,glm::vec3(0.3,0.3,0.3));
+
+    m_current_transformation=m_current_transformation*scalemat;
     m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
     m_trackball_rotation=glm::mat4(1.);
@@ -39,19 +43,28 @@ CgSceneControl::CgSceneControl()
     //                    );
     //    }
 
-//    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
-//        testPolyline = new CgPolyline(
-//                    std::vector<glm::vec3> {
-//                        glm::vec3(-1.5, 1.0, 0.0),
-//                        glm::vec3(0.0, 0.5, 0.0),
-//                        glm::vec3(1.5, 1.0, 0.0),
-//                        glm::vec3(0.0, -1.5, 0.0),
-//                        glm::vec3(-1.5, 1.0, 0.0)
-//                    },
-//                    300
-//                    );
-    testRevolution = new CgSolidOfRevolution(std::vector<glm::vec3> {glm::vec3(0.5, -1, 0.0), glm::vec3(1.5, -1.0, 0.0), glm::vec3(0.333, 1, 0.0), glm::vec3(0.5, 2.0, 0.0)}, 50, 303);
-    testRevolution->calculateVertices();
+    //    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
+    //        testPolyline = new CgPolyline(
+    //                    std::vector<glm::vec3> {
+    //                        glm::vec3(-1.5, 1.0, 0.0),
+    //                        glm::vec3(0.0, 0.5, 0.0),
+    //                        glm::vec3(1.5, 1.0, 0.0),
+    //                        glm::vec3(0.0, -1.5, 0.0),
+    //                        glm::vec3(-1.5, 1.0, 0.0)
+    //                    },
+    //                    300
+    //                    );
+    testRevolution = new CgSolidOfRevolution();
+    testRevolution->setCurve(std::vector<glm::vec3> {
+                                  glm::vec3(0.0, 1, 0.0),
+                                  glm::vec3(1, 0, 0.0),
+                                  glm::vec3(0.333, -0.2 , 0.0),
+                                  glm::vec3(0.5, -0.4, 0.0),
+                                  glm::vec3(0.33, -0.5, 0.0),
+                                  glm::vec3(1.0, -0.9, 0.0),
+                                  glm::vec3(1.0, -1, 0.0)
+                              });
+
 }
 
 
@@ -158,6 +171,11 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
     }
 
+    if (e->getType() & Cg::CgRevolutionSegmentsEvent) {
+        CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
+        testRevolution->setRotationSegments(ev->getValue());
+    }
+
     if (e->getType() & Cg::CgButtonClicked) {
         CgButtonClickedEvent* ev = (CgButtonClickedEvent*) e;
 
@@ -169,6 +187,12 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
             testPolyline->reset();
             m_renderer->init(testPolyline);
             m_renderer->redraw();
+        } else if (ev->getButtonEventType() == Cg::GenerateRevolution) {
+
+            testRevolution->calculateVertices();
+            m_renderer->init(testRevolution);
+            m_renderer->redraw();
+
         }
 
     }
