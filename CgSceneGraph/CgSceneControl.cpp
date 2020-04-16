@@ -64,7 +64,6 @@ CgSceneControl::CgSceneControl()
                                   glm::vec3(1.0, -0.9, 0.0),
                                   glm::vec3(1.0, -1, 0.0)
                               });
-
 }
 
 
@@ -191,6 +190,16 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
             testRevolution->calculateVertices();
             m_renderer->init(testRevolution);
+            for (int i = 0; i < testRevolution->getFaceNormals().size(); i = i+2) {
+                m_polyLines.push_back(
+                            new CgPolyline(
+                                std::vector<glm::vec3> {testRevolution->getFaceNormals().at(i), testRevolution->getFaceNormals().at(i) + testRevolution->getFaceNormals().at(i)},
+                                i)
+                            );
+                }
+            for (CgPolyline* poly : m_polyLines) {
+                m_renderer->init(poly);
+            }
             m_renderer->redraw();
 
         }

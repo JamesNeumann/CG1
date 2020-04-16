@@ -5,6 +5,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
+#include <glm/gtx/normal.hpp>
 
 CgSolidOfRevolution::CgSolidOfRevolution():m_type(Cg::TriangleMesh),m_id(203)
 {
@@ -45,17 +46,34 @@ void CgSolidOfRevolution::calculateVertices()
 
     float verticesSize = m_vertices.size();
     float verticesPerLevel = verticesSize / curveSize;
-
+    std::cout << verticesSize << std::endl;
     for (int i = 0; i < curveSize* (verticesPerLevel) - verticesPerLevel; i = i + verticesPerLevel) {
-        std::cout << i << std::endl;
         for (int j = 0; j < m_rotationSegments - 1; j++) {
             m_triangle_indices.push_back(i + j);
             m_triangle_indices.push_back(i + verticesPerLevel + j);
             m_triangle_indices.push_back(i + verticesPerLevel+ 1 + j);
+
             m_triangle_indices.push_back(i + verticesPerLevel + 1 + j);
+
             m_triangle_indices.push_back(i + 1 + j);
             m_triangle_indices.push_back(i + j);
         }
+    }
+       std::cout << m_triangle_indices.size() << std::endl;
+    for (int i = 0; i < m_triangle_indices.size(); i = i + 3) {
+        glm::vec3 a = m_vertices.at(m_triangle_indices.at(i)) - m_vertices.at(m_triangle_indices.at(i + 1));
+        glm::vec3 b = m_vertices.at(m_triangle_indices.at(i)) - m_vertices.at(m_triangle_indices.at(i + 2));
+        glm::vec3 normal = glm::normalize(
+                    glm::cross(
+                        a,
+                        b
+                        ));
+        m_face_normals.push_back(normal);
+        std::cout << glm::to_string(normal) << std::endl;
+    }
+
+    for (int i = 0; i < verticesSize  ; i++) {
+
     }
 
     for (int i = 0; i < m_curve.size() - 1; i++) {
