@@ -34,7 +34,7 @@ private:
     unsigned int m_lineWidth;
 
     int subdivided = 1;
-    int maxSubdivision = 0;
+    int maxSubdivision = 4;
 
     std::vector<glm::vec3> back_up_vertices;
 };

@@ -54,16 +54,27 @@ CgSceneControl::CgSceneControl()
     //                    },
     //                    300
     //                    );
+
+     testPolyline = new CgPolyline(std::vector<glm::vec3> {
+                                                   glm::vec3(0.0, 1, 0.0),
+                                                   glm::vec3(1, 0, 0.0),
+                                                   glm::vec3(0.333, -0.2 , 0.0),
+                                                   glm::vec3(0.5, -0.4, 0.0),
+                                                   glm::vec3(0.33, -0.5, 0.0),
+                                                   glm::vec3(1.0, -0.9, 0.0),
+                                                   glm::vec3(1.0, -1, 0.0)
+                                               }, 2312);
     testRevolution = new CgSolidOfRevolution();
-    testRevolution->setCurve(std::vector<glm::vec3> {
-                                  glm::vec3(0.0, 1, 0.0),
-                                  glm::vec3(1, 0, 0.0),
-                                  glm::vec3(0.333, -0.2 , 0.0),
-                                  glm::vec3(0.5, -0.4, 0.0),
-                                  glm::vec3(0.33, -0.5, 0.0),
-                                  glm::vec3(1.0, -0.9, 0.0),
-                                  glm::vec3(1.0, -1, 0.0)
-                              });
+//    testRevolution->setCurve(std::vector<glm::vec3> {
+//                                  glm::vec3(0.0, 1, 0.0),
+//                                  glm::vec3(1, 0, 0.0),
+//                                  glm::vec3(0.333, -0.2 , 0.0),
+//                                  glm::vec3(0.5, -0.4, 0.0),
+//                                  glm::vec3(0.33, -0.5, 0.0),
+//                                  glm::vec3(1.0, -0.9, 0.0),
+//                                  glm::vec3(1.0, -1, 0.0)
+//                              });
+    testRevolution->setCurve(testPolyline->getVertices());
 }
 
 
@@ -94,8 +105,8 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
     if(!m_polyLines.empty())
         for (CgPolyline* poly : m_polyLines)
             m_renderer->init(poly);
-    if(testPolyline!=NULL)
-        m_renderer->init(testPolyline);
+//    if(testPolyline!=NULL)
+//        m_renderer->init(testPolyline);
     if(testRevolution!=NULL)
         m_renderer->init(testRevolution);
 }
@@ -142,8 +153,8 @@ void CgSceneControl::renderObjects()
     if(!m_polyLines.empty())
         for (CgPolyline* poly : m_polyLines)
             m_renderer->render(poly);
-    if(testPolyline!=NULL)
-        m_renderer->render(testPolyline);
+//    if(testPolyline!=NULL)
+//        m_renderer->render(testPolyline);
     if(testRevolution!=NULL)
         m_renderer->render(testRevolution);
 
@@ -180,26 +191,26 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
         if (ev->getButtonEventType() == Cg::MakeStep) {
             testPolyline->applyLaneRiesenfeld(1);
-            m_renderer->init(testPolyline);
+//            m_renderer->init(testPolyline);
             m_renderer->redraw();
         } else if (ev->getButtonEventType() == Cg::ClearSteps) {
             testPolyline->reset();
             m_renderer->init(testPolyline);
             m_renderer->redraw();
         } else if (ev->getButtonEventType() == Cg::GenerateRevolution) {
-
+            testRevolution->setCurve(testPolyline->getVertices());
             testRevolution->calculateVertices();
             m_renderer->init(testRevolution);
-            for (int i = 0; i < testRevolution->getFaceNormals().size(); i = i+2) {
-                m_polyLines.push_back(
-                            new CgPolyline(
-                                std::vector<glm::vec3> {testRevolution->getFaceNormals().at(i), testRevolution->getFaceNormals().at(i) + testRevolution->getFaceNormals().at(i)},
-                                i)
-                            );
-                }
-            for (CgPolyline* poly : m_polyLines) {
-                m_renderer->init(poly);
-            }
+//            for (int i = 0; i < testRevolution->getFaceNormals().size(); i = i+2) {
+//                m_polyLines.push_back(
+//                            new CgPolyline(
+//                                std::vector<glm::vec3> {testRevolution->getFaceNormals().at(i), testRevolution->getFaceNormals().at(i) + testRevolution->getFaceNormals().at(i)},
+//                                i)
+//                            );
+//                }
+//            for (CgPolyline* poly : m_polyLines) {
+//                m_renderer->init(poly);
+//            }
             m_renderer->redraw();
 
         }

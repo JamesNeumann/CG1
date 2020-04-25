@@ -7,13 +7,14 @@
 #include <iostream>
 #include <glm/gtx/normal.hpp>
 
+#include "CgUtils/IdGenerator.h"
+
 CgSolidOfRevolution::CgSolidOfRevolution():m_type(Cg::TriangleMesh),m_id(203)
 {
 
 }
-CgSolidOfRevolution::CgSolidOfRevolution(std::vector<glm::vec3> curve, int id):
-    m_type(Cg::TriangleMesh),
-    m_id(id)
+CgSolidOfRevolution::CgSolidOfRevolution(std::vector<glm::vec3> curve):
+    m_type(Cg::TriangleMesh),m_id(IdGenerator.getId())
 {
     m_curve = curve;
 }

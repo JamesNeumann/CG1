@@ -57,5 +57,6 @@ HEADERS += \
     CgSceneGraph/CgPolyline.h \
     CgEvents/CgSubdivideEvent.h \
     CgEvents/CgButtonClickedEvent.h \
-    CgSceneGraph/CgSolidOfRevolution.h
+    CgSceneGraph/CgSolidOfRevolution.h \
+    CgUtils/IdGenerator.h
 
