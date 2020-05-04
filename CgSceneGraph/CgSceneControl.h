@@ -12,6 +12,7 @@ class CgExampleTriangle;
 class CgCube;
 class CgPolyline;
 class CgSolidOfRevolution;
+class CgTriangleMesh;
 
 class CgSceneControl : public CgObserver, public CgBaseSceneControl
 {
@@ -31,6 +32,9 @@ private:
 
     CgExampleTriangle* m_triangle;
     CgCube* m_cube;
+
+    CgTriangleMesh* m_triangle_mesh;
+
     std::vector<CgPolyline*> m_polyLines;
     CgPolyline* testPolyline;
     CgSolidOfRevolution* testRevolution;

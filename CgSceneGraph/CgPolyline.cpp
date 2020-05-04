@@ -1,16 +1,18 @@
 #include "CgPolyline.h"
 #include <iostream>
+#include "CgUtils/IdGenerator.h"
+
 CgPolyline::CgPolyline()
 {
 
 }
 
-CgPolyline::CgPolyline(std::vector<glm::vec3> args_verticies, int id):
+CgPolyline::CgPolyline(std::vector<glm::vec3> args_verticies):
     m_type(Cg::Polyline),
-    m_id(id)
+    m_id(IdGenerator::getId())
 {
     m_verticies = args_verticies;
-    m_lineWidth = 3;
+    m_lineWidth = 1;
     m_color = Cg::BASECOLOR;
 }
 

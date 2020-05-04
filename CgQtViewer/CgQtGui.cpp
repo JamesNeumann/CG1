@@ -54,13 +54,15 @@ CgQtGui::CgQtGui(CgQtMainApplication *mw)
     QWidget *otheropt = new QWidget;
     createOptionPanelExample2(otheropt);
 
-    QWidget *coloropt = new QWidget;
-    createColorChangePanel(coloropt);
+    option_panel = new QWidget;
+    createOptionsTab(option_panel);
 
     QTabWidget* m_tabs = new QTabWidget();
 //    m_tabs->addTab(opt,"&My Tab1");
 //    m_tabs->addTab(otheropt,"&My Tab2");
-    m_tabs->addTab(coloropt, "&Options");
+
+    QWidget *objektopt = new QWidget();
+    m_tabs->addTab(option_panel, "&Options");
 
 
     container->addWidget(m_tabs);
@@ -118,7 +120,6 @@ CgQtGui::CgQtGui(CgQtMainApplication *mw)
     polygonmode_group->addAction(filled);
 
 
-
     // todo: Add Quit-Action
     m_menuBar->addMenu( file_menu );
     m_menuBar->addMenu( settings_menu );
@@ -142,12 +143,144 @@ QSlider *CgQtGui::createSlider()
     return slider;
 }
 
+QGroupBox* CgQtGui::createObjectSelectPanel()
+{
+
+    QGroupBox *groupBox = new QGroupBox(tr("Objektoption"));
+
+    radio1 = new QRadioButton(tr("Würfel"));
+    connect(radio1, SIGNAL(clicked(bool)), this, SLOT(radioButtonChanged()));
+    radio1->setChecked(true);
+
+    radio2 = new QRadioButton(tr("Polyline"));
+    connect(radio2, SIGNAL(clicked(bool)), this, SLOT(radioButtonChanged()));
+    radio3 = new QRadioButton(tr("Rotatioskörper"));
+    connect(radio3, SIGNAL(clicked(bool)), this, SLOT(radioButtonChanged()));
+
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(radio1);
+    vbox->addWidget(radio2);
+    vbox->addWidget(radio3);
+    groupBox->setLayout(vbox);
+
+    return groupBox;
+
+}
+
+QSlider* CgQtGui::createColorSlider() {
+    QSlider *slider = new QSlider(Qt::Vertical);
+    slider->setRange(0, 255);
+    slider->setSingleStep(1);
+    slider->setTickPosition(QSlider::TicksRight);
+    return slider;
+}
+
+QGroupBox* CgQtGui::createColorSliders()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("Farbwahl"));
+
+    QHBoxLayout *hbox = new QHBoxLayout();
+
+    QSlider *sliderRed = createColorSlider();
+    sliderRed->setValue(Cg::BASECOLOR[0] * 255);
+    connect(sliderRed, SIGNAL(valueChanged(int)), this, SLOT(slotRedColorChanged(int)));
+
+    QSlider *sliderGreen = createColorSlider();
+    sliderGreen->setValue(Cg::BASECOLOR[1] * 255);
+    connect(sliderGreen, SIGNAL(valueChanged(int)), this, SLOT(slotGreenColorChanged(int)));
+
+    QSlider *sliderBlue = createColorSlider();
+    sliderBlue->setValue(Cg::BASECOLOR[2] * 255);
+    connect(sliderBlue, SIGNAL(valueChanged(int)), this, SLOT(slotBlueColorChanged(int)));
 
 
+    hbox->addWidget(sliderRed);
+    hbox->addWidget(sliderGreen);
+    hbox->addWidget(sliderBlue);
+
+    groupBox->setLayout(hbox);
+
+    return groupBox;
 
 
+//    colorLabel = new QLabel("Color");
+//    tab_options_control->addWidget(colorLabel);
+//    redColorSpinBox = new QSpinBox();
+//    redColorSpinBox->setMinimum(0);
+//    redColorSpinBox->setMaximum(255);
+//    redColorSpinBox->setValue(Cg::BASECOLOR[0] * 255);
+//    redColorSpinBox->setPrefix("RED: ");
+//    connect(redColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRedColorChanged(int)));
+//    tab_color_control->addWidget(redColorSpinBox);
 
+//    greenColorSpinBox = new QSpinBox();
+//    greenColorSpinBox->setMinimum(0);
+//    greenColorSpinBox->setMaximum(255);
+//    greenColorSpinBox->setValue(Cg::BASECOLOR[1] * 255);
+//    greenColorSpinBox->setPrefix("GREEN: ");
+//    connect(greenColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotGreenColorChanged(int)));
+//    tab_color_control->addWidget(greenColorSpinBox);
 
+//    blueColorSpinBox = new QSpinBox();
+//    blueColorSpinBox->setMinimum(0);
+//    blueColorSpinBox->setMaximum(255);
+//    blueColorSpinBox->setValue(Cg::BASECOLOR[2] * 255);
+//    blueColorSpinBox->setPrefix("BLUE: ");
+//    connect(blueColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotBlueColorChanged(int)));
+//    tab_color_control->addWidget(blueColorSpinBox);
+}
+
+QGroupBox* CgQtGui::createRiesenfeldControl() {
+    QGroupBox *groupBox = new QGroupBox(tr("Unterteilungsschritte"));
+
+    QVBoxLayout *tab_laneRiesenfeld_control = new QVBoxLayout();
+
+    QHBoxLayout* tab_laneRiesenfeld_input = new QHBoxLayout();
+    laneRiesenfeldSpin = new QSpinBox();
+    laneRiesenfeldSpin->setMinimum(1);
+    laneRiesenfeldSpin->setMaximum(15);
+    laneRiesenfeldSpin->setValue(1);
+    connect(laneRiesenfeldSpin, SIGNAL(valueChanged(int)), this, SLOT(slotSubdivideChanged(int)));
+    tab_laneRiesenfeld_input->addWidget(laneRiesenfeldSpin);
+
+    buttonLaneGo = new QPushButton();
+    QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
+    buttonLaneGo->setText(input);
+    connect(buttonLaneGo, SIGNAL(released()), this, SLOT(slotSchrittButtonClicked()));
+    tab_laneRiesenfeld_input->addWidget(buttonLaneGo);
+
+    QPushButton *clearButton = new QPushButton("Clear");
+    connect(clearButton, SIGNAL(released()), this, SLOT(slotClearButtonClicked()));
+
+    tab_laneRiesenfeld_control->addLayout(tab_laneRiesenfeld_input);
+
+    tab_laneRiesenfeld_control->addWidget(clearButton);
+
+    groupBox->setLayout(tab_laneRiesenfeld_control);
+
+    return groupBox;
+
+}
+
+QGroupBox* CgQtGui::createRotationControl() {
+    QGroupBox *groupBox = new QGroupBox(tr("Rotationsschritte"));
+
+    QHBoxLayout* solidOfRevolution_cotrol = new QHBoxLayout();
+    revolutionSegmentsSpinBox = new QSpinBox();
+    revolutionSegmentsSpinBox->setMinimum(1);
+    revolutionSegmentsSpinBox->setMaximum(10000);
+    revolutionSegmentsSpinBox->setValue(1);
+    connect(revolutionSegmentsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRevolutionSegmentsChanged(int)));
+    solidOfRevolution_cotrol->addWidget(revolutionSegmentsSpinBox);
+
+    buttonRevolutionGo = new QPushButton("Generieren");
+    connect(buttonRevolutionGo, SIGNAL(released()), this, SLOT(slotRevolutionGoClicked()));
+    solidOfRevolution_cotrol->addWidget(buttonRevolutionGo);
+
+    groupBox->setLayout(solidOfRevolution_cotrol);
+
+    return groupBox;
+}
 void CgQtGui::createOptionPanelExample1(QWidget* parent)
 {
     QVBoxLayout *tab1_control = new QVBoxLayout();
@@ -242,99 +375,40 @@ void CgQtGui::createOptionPanelExample2(QWidget* parent)
 
 }
 
-void CgQtGui::createColorChangePanel(QWidget *panel) {
-    QVBoxLayout *tab_options_control = new QVBoxLayout();
-    QLabel *optionsLabel = new QLabel("Optionen");
-    tab_options_control->addWidget(optionsLabel);
+void CgQtGui::createOptionsTab(QWidget *panel) {
+    tab_options_control = new QVBoxLayout();
 
-    QVBoxLayout *tab_color_control = new QVBoxLayout();
+    tab_options_control->addWidget(createObjectSelectPanel());
 
-    colorLabel = new QLabel("Color");
-    tab_options_control->addWidget(colorLabel);
-    redColorSpinBox = new QSpinBox();
-    redColorSpinBox->setMinimum(0);
-    redColorSpinBox->setMaximum(255);
-    redColorSpinBox->setValue(Cg::BASECOLOR[0] * 255);
-    redColorSpinBox->setPrefix("RED: ");
-    connect(redColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRedColorChanged(int)));
-    tab_color_control->addWidget(redColorSpinBox);
+    tab_options_control->addWidget(createColorSliders());
 
-    greenColorSpinBox = new QSpinBox();
-    greenColorSpinBox->setMinimum(0);
-    greenColorSpinBox->setMaximum(255);
-    greenColorSpinBox->setValue(Cg::BASECOLOR[1] * 255);
-    greenColorSpinBox->setPrefix("GREEN: ");
-    connect(greenColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotGreenColorChanged(int)));
-    tab_color_control->addWidget(greenColorSpinBox);
+    riesenFeldControl = createRiesenfeldControl();
+    riesenFeldControl->setVisible(false);
+    rotationControl = createRotationControl();
+    rotationControl->setVisible(false);
 
-    blueColorSpinBox = new QSpinBox();
-    blueColorSpinBox->setMinimum(0);
-    blueColorSpinBox->setMaximum(255);
-    blueColorSpinBox->setValue(Cg::BASECOLOR[2] * 255);
-    blueColorSpinBox->setPrefix("BLUE: ");
-    connect(blueColorSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotBlueColorChanged(int)));
-    tab_color_control->addWidget(blueColorSpinBox);
-
-    tab_options_control->addLayout(tab_color_control);
-
-
-    QFrame* line2 = new QFrame();
-    line2->setFrameShape(QFrame::HLine);
-    line2->setFrameShadow(QFrame::Sunken);
-    tab_options_control->addWidget(line2);
-
-
-    QVBoxLayout *tab_laneRiesenfeld_control = new QVBoxLayout();
-    laneRiesenfeldLabel = new QLabel("Unterteilungsschritte");
-    tab_laneRiesenfeld_control->addWidget(laneRiesenfeldLabel);
-
-    QHBoxLayout* tab_laneRiesenfeld_input = new QHBoxLayout();
-    laneRiesenfeldSpin = new QSpinBox();
-    laneRiesenfeldSpin->setMinimum(1);
-    laneRiesenfeldSpin->setMaximum(15);
-    laneRiesenfeldSpin->setValue(1);
-    connect(laneRiesenfeldSpin, SIGNAL(valueChanged(int)), this, SLOT(slotSubdivideChanged(int)));
-    tab_laneRiesenfeld_input->addWidget(laneRiesenfeldSpin);
-
-    buttonLaneGo = new QPushButton();
-    QString input = "Schritt: " + QString::number(step) + " von " + QString::number(maxSteps);
-    buttonLaneGo->setText(input);
-    connect(buttonLaneGo, SIGNAL(released()), this, SLOT(slotSchrittButtonClicked()));
-    tab_laneRiesenfeld_input->addWidget(buttonLaneGo);
-
-    QPushButton *clearButton = new QPushButton("Clear");
-    connect(clearButton, SIGNAL(released()), this, SLOT(slotClearButtonClicked()));
-
-    tab_laneRiesenfeld_control->addLayout(tab_laneRiesenfeld_input);
-
-    tab_laneRiesenfeld_control->addWidget(clearButton);
-
-    tab_options_control->addLayout(tab_laneRiesenfeld_control);
-
-
-
-    QFrame* line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    tab_options_control->addWidget(line);
-
-    QHBoxLayout* solidOfRevolution_cotrol = new QHBoxLayout();
-    revolutionSegmentsSpinBox = new QSpinBox();
-    revolutionSegmentsSpinBox->setMinimum(1);
-    revolutionSegmentsSpinBox->setMaximum(10000);
-    revolutionSegmentsSpinBox->setValue(1);
-    connect(revolutionSegmentsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRevolutionSegmentsChanged(int)));
-    solidOfRevolution_cotrol->addWidget(revolutionSegmentsSpinBox);
-
-    buttonRevolutionGo = new QPushButton("Generieren");
-    connect(buttonRevolutionGo, SIGNAL(released()), this, SLOT(slotRevolutionGoClicked()));
-    solidOfRevolution_cotrol->addWidget(buttonRevolutionGo);
-
-    tab_options_control->addLayout(solidOfRevolution_cotrol);
+    tab_options_control->addWidget(riesenFeldControl);
+    tab_options_control->addWidget(rotationControl);
     panel->setLayout(tab_options_control);
 
 }
 
+void CgQtGui::radioButtonChanged() {
+    std::cout << riesenFeldControl << ", " << rotationControl << std::endl;
+
+    if (radio1->isChecked()) {
+        riesenFeldControl->setVisible(false);
+        rotationControl->setVisible(false);
+    } else if (radio2->isChecked()){
+        riesenFeldControl->setVisible(true);
+        rotationControl->setVisible(false);
+    }
+    if (radio3->isChecked()) {
+        riesenFeldControl->setVisible(true);
+        rotationControl->setVisible(true);
+    }
+
+}
 
 void CgQtGui::slotRedColorChanged(int value)
 {

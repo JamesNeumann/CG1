@@ -24,7 +24,10 @@ SOURCES += main.cpp \
     CgSceneGraph/CgPolyline.cpp \
     CgEvents/CgSubdivideEvent.cpp \
     CgEvents/CgButtonClickedEvent.cpp \
-    CgSceneGraph/CgSolidOfRevolution.cpp
+    CgSceneGraph/CgTriangleMesh.cpp \
+    CgUtils/IdGenerator.cpp \
+    CgSceneGraph/CgSolidOfRevolution.cpp \
+    CgEvents/CgrenderObjectEvent.cpp
 
 HEADERS += \
     CgQtViewer/CgQtGLRenderWidget.h \
@@ -57,6 +60,9 @@ HEADERS += \
     CgSceneGraph/CgPolyline.h \
     CgEvents/CgSubdivideEvent.h \
     CgEvents/CgButtonClickedEvent.h \
+    CgUtils/IdGenerator.h \
+    CgSceneGraph/CgTriangleMesh.h \
+    CgUtils/IdGenerator.h \
     CgSceneGraph/CgSolidOfRevolution.h \
-    CgUtils/IdGenerator.h
+    CgEvents/CgRenderObjectEvent.h
 

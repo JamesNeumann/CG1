@@ -55,6 +55,9 @@ class QSpinBox;
 class QMenuBar;
 class QAction;
 class QLabel;
+class QGroupBox;
+class QRadioButton;
+class QVBoxLayout;
 QT_END_NAMESPACE
 
 class CgQtGLRenderWidget;
@@ -96,15 +99,29 @@ private:
     QWidget*               m_option_panel_ex4;
     QWidget*               m_option_panel_ex5;
 
+    QVBoxLayout* tab_options_control;
 
     /* example for usage of qt gui elements, feel free to add what you like */
     void createOptionPanelExample1(QWidget* panel);
     void createOptionPanelExample2(QWidget* panel);
+
+    QWidget *option_panel;
+
+    QSlider* createColorSlider();
+
+    QGroupBox* createObjectSelectPanel();
+    QGroupBox* createColorSliders();
+    QGroupBox* createRiesenfeldControl();
+    QGroupBox* riesenFeldControl;
+
+    QGroupBox* createRotationControl();
+    QGroupBox* rotationControl;
+
     QButtonGroup* myButtonGroup;
     QCheckBox* myCheckBox1;
     QSpinBox* mySpinBox1;
 
-    void createColorChangePanel(QWidget* panel);
+    void createOptionsTab(QWidget* panel);
     QLabel* colorLabel;
     QSpinBox* redColorSpinBox;
     QSpinBox* greenColorSpinBox;
@@ -112,6 +129,10 @@ private:
 
     QLabel* laneRiesenfeldLabel;
     QSpinBox* laneRiesenfeldSpin;
+
+    QRadioButton *radio1;
+    QRadioButton *radio2;
+    QRadioButton *radio3;
 
     int step = 1;
     int maxSteps = 1;
@@ -123,7 +144,7 @@ private:
 
 private slots:
 
-
+    void radioButtonChanged();
 
     /* slots to catch events directly from renderer */
     void mouseEvent(QMouseEvent* event);

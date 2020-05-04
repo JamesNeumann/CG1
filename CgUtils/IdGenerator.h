@@ -1,11 +1,13 @@
-#ifndef UUID_H
-#define UUID_H
+#ifndef IDGENERATOR_H
+#define IDGENERATOR_H
+
 
 class IdGenerator {
-private:
-    static unsigned int currentId = 1;
 public:
-    unsigned int getId() { return currentId++; }
-}
+    static unsigned int getId();
+private:
+    static unsigned int currentId;
 
-#endif
+};
+
+#endif // IDGENERATOR_H

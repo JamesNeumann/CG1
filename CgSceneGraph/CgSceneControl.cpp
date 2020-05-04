@@ -13,6 +13,7 @@
 #include "CgCube.h"
 #include "CgPolyline.h"
 #include "CgSolidOfRevolution.h"
+#include "CgTriangleMesh.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include "CgUtils/ObjLoader.h"
@@ -32,9 +33,8 @@ CgSceneControl::CgSceneControl()
     m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
     m_trackball_rotation=glm::mat4(1.);
-    //    m_triangle= new CgExampleTriangle(21);
-    //    m_cube = new CgCube(100);
-    //    m_cube->calculateFaceNormals();
+//        m_triangle= new CgExampleTriangle(21);
+//         m_cube = new CgCube();
     //    for (int i = 0; i < m_cube->getFaceNormals().size(); i = i+2) {
     //        m_polyLines.push_back(
     //                    new CgPolyline(
@@ -63,9 +63,9 @@ CgSceneControl::CgSceneControl()
                                                    glm::vec3(0.33, -0.5, 0.0),
                                                    glm::vec3(1.0, -0.9, 0.0),
                                                    glm::vec3(1.0, -1, 0.0)
-                                               }, 2312);
+                                               });
     testRevolution = new CgSolidOfRevolution();
-//    testRevolution->setCurve(std::vector<glm::vec3> {
+//    testRevolution->setRotationCurve(std::vector<glm::vec3> {
 //                                  glm::vec3(0.0, 1, 0.0),
 //                                  glm::vec3(1, 0, 0.0),
 //                                  glm::vec3(0.333, -0.2 , 0.0),
@@ -74,7 +74,12 @@ CgSceneControl::CgSceneControl()
 //                                  glm::vec3(1.0, -0.9, 0.0),
 //                                  glm::vec3(1.0, -1, 0.0)
 //                              });
-    testRevolution->setCurve(testPolyline->getVertices());
+    testRevolution->setRotationCurve(testPolyline->getVertices());
+
+
+    m_triangle_mesh = new CgTriangleMesh();
+    m_triangle_mesh->calculateNormals();
+
 }
 
 
@@ -91,6 +96,7 @@ CgSceneControl::~CgSceneControl()
         delete testPolyline;
     if(testRevolution!=NULL)
         delete testRevolution;
+    delete m_triangle_mesh;
 }
 
 void CgSceneControl::setRenderer(CgBaseRenderer* r)
@@ -100,15 +106,38 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
 
     if(m_triangle!=NULL)
         m_renderer->init(m_triangle);
-    if(m_cube!=NULL)
+    if(m_cube!=NULL) {
         m_renderer->init(m_cube);
+        for (CgPolyline* line : m_cube->getFaceNormalPolylines()) {
+            m_renderer->init(line);
+        }
+        for (CgPolyline* line : m_cube->getVertexNormalPolylines()) {
+            m_renderer->init(line);
+        }
+    }
+
     if(!m_polyLines.empty())
         for (CgPolyline* poly : m_polyLines)
             m_renderer->init(poly);
 //    if(testPolyline!=NULL)
 //        m_renderer->init(testPolyline);
-    if(testRevolution!=NULL)
-        m_renderer->init(testRevolution);
+    if(testRevolution!=NULL) {
+        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
+            m_renderer->init(line);
+        }
+        for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
+            m_renderer->init(line);
+        }
+    }
+
+    m_renderer->init(m_triangle_mesh);
+    for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
+        m_renderer->init(line);
+    }
+    for (CgPolyline* line : m_triangle_mesh->getVertexNormalPolylines()) {
+        m_renderer->init(line);
+    }
+
 }
 
 
@@ -148,15 +177,38 @@ void CgSceneControl::renderObjects()
 
     if(m_triangle!=NULL)
         m_renderer->render(m_triangle);
-    if(m_cube!=NULL)
+    if(m_cube!=NULL) {
         m_renderer->render(m_cube);
+        for (CgPolyline* line : m_cube->getFaceNormalPolylines()) {
+            m_renderer->render(line);
+        }
+        for (CgPolyline* line : m_cube->getVertexNormalPolylines()) {
+            m_renderer->render(line);
+        }
+    }
+
     if(!m_polyLines.empty())
         for (CgPolyline* poly : m_polyLines)
             m_renderer->render(poly);
 //    if(testPolyline!=NULL)
 //        m_renderer->render(testPolyline);
-    if(testRevolution!=NULL)
+    if(testRevolution!=NULL) {
         m_renderer->render(testRevolution);
+        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
+            m_renderer->render(line);
+        }
+        for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
+            m_renderer->render(line);
+        }
+    }
+
+    m_renderer->render(m_triangle_mesh);
+    for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
+        m_renderer->render(line);
+    }
+    for (CgPolyline* line : m_triangle_mesh->getVertexNormalPolylines()) {
+        m_renderer->render(line);
+    }
 
 }
 
@@ -183,7 +235,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
     if (e->getType() & Cg::CgRevolutionSegmentsEvent) {
         CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
-        testRevolution->setRotationSegments(ev->getValue());
+        testRevolution->setRotationSteps(ev->getValue());
     }
 
     if (e->getType() & Cg::CgButtonClicked) {
@@ -198,8 +250,8 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
             m_renderer->init(testPolyline);
             m_renderer->redraw();
         } else if (ev->getButtonEventType() == Cg::GenerateRevolution) {
-            testRevolution->setCurve(testPolyline->getVertices());
-            testRevolution->calculateVertices();
+            testRevolution->setRotationCurve(testPolyline->getVertices());
+            testRevolution->createRotationBody();
             m_renderer->init(testRevolution);
 //            for (int i = 0; i < testRevolution->getFaceNormals().size(); i = i+2) {
 //                m_polyLines.push_back(
@@ -211,6 +263,14 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 //            for (CgPolyline* poly : m_polyLines) {
 //                m_renderer->init(poly);
 //            }
+
+            for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
+                m_renderer->init(line);
+            }
+            for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
+                m_renderer->init(line);
+            }
+
             m_renderer->redraw();
 
         }
@@ -296,8 +356,21 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
 
 
-        m_triangle->init(pos,norm,indx);
-        m_renderer->init(m_triangle);
+//        m_triangle->init(pos,norm,indx);
+//        m_renderer->init(m_triangle);
+
+        m_triangle_mesh->init(pos, norm, indx);
+        m_triangle_mesh->calculateNormals();
+
+        m_renderer->init(m_triangle_mesh);
+
+//        for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//        for (CgPolyline* line : m_triangle_mesh->getVertexNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+
         m_renderer->redraw();
     }
 
