@@ -14,6 +14,7 @@ public:
     Cg::EventType getType();
     CgBaseEvent* clone();
 
+    int getButtonNumber();
     friend std::ostream& operator << (std::ostream& os, const CgRenderObjectEvent& e);
 
     ~CgRenderObjectEvent();

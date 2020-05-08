@@ -3,6 +3,7 @@
 
 #include "CgBase/CgObserver.h"
 #include "CgBase/CgBaseSceneControl.h"
+#include "CgBase/CgBaseRenderableObject.h"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -28,12 +29,16 @@ public:
 
 private:
 
+    bool polyLineActive;
+
     CgBaseRenderer* m_renderer;
 
     CgExampleTriangle* m_triangle;
     CgCube* m_cube;
 
     CgTriangleMesh* m_triangle_mesh;
+
+    CgTriangleMesh* m_base_object;
 
     std::vector<CgPolyline*> m_polyLines;
     CgPolyline* testPolyline;

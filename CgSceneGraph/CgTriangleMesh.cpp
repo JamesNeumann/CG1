@@ -46,6 +46,8 @@ void CgTriangleMesh::init( std::string filename)
 }
 
 void CgTriangleMesh::calculateNormals() {
+    m_vertex_normals.clear();
+    m_face_normals.clear();
     m_vertex_normals.resize(m_vertices.size());
     for (int i = 0; i < m_triangle_indices.size(); i = i+3) {
         unsigned int first = m_triangle_indices.at(i);

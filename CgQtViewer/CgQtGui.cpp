@@ -12,6 +12,7 @@
 #include "../CgEvents/CgColorChangEvent.h"
 #include "../CgEvents/CgSubdivideEvent.h"
 #include "../CgEvents/CgButtonClickedEvent.h"
+#include "../CgEvents/CgRenderObjectEvent.h"
 #include <QSlider>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -395,19 +396,24 @@ void CgQtGui::createOptionsTab(QWidget *panel) {
 
 void CgQtGui::radioButtonChanged() {
     std::cout << riesenFeldControl << ", " << rotationControl << std::endl;
-
+    CgBaseEvent* e;
     if (radio1->isChecked()) {
         riesenFeldControl->setVisible(false);
         rotationControl->setVisible(false);
+        e = new CgRenderObjectEvent(Cg::CgRenderObjectEvent, 0);
     } else if (radio2->isChecked()){
         riesenFeldControl->setVisible(true);
         rotationControl->setVisible(false);
+        e = new CgRenderObjectEvent(Cg::CgRenderObjectEvent, 1);
+
     }
     if (radio3->isChecked()) {
         riesenFeldControl->setVisible(true);
         rotationControl->setVisible(true);
-    }
+        e = new CgRenderObjectEvent(Cg::CgRenderObjectEvent, 2);
 
+    }
+    notifyObserver(e);
 }
 
 void CgQtGui::slotRedColorChanged(int value)

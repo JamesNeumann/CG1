@@ -9,6 +9,7 @@
 #include "CgEvents/CgSubdivideEvent.h"
 #include "CgEvents/CgButtonClickedEvent.h"
 #include "CgBase/CgBaseRenderer.h"
+#include "CgEvents/CgRenderObjectEvent.h"
 #include "CgExampleTriangle.h"
 #include "CgCube.h"
 #include "CgPolyline.h"
@@ -25,6 +26,9 @@ CgSceneControl::CgSceneControl()
     m_cube = NULL;
     testPolyline = NULL;
     testRevolution = NULL;
+
+    m_base_object = NULL;
+
     m_current_transformation=glm::mat4(1.);
     glm::mat4 scalemat = glm::mat4(1.);
     scalemat = glm::scale(scalemat,glm::vec3(0.3,0.3,0.3));
@@ -33,27 +37,21 @@ CgSceneControl::CgSceneControl()
     m_lookAt_matrix= glm::lookAt(glm::vec3(0.0,0.0,1.0),glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
     m_trackball_rotation=glm::mat4(1.);
-//        m_triangle= new CgExampleTriangle(21);
-//         m_cube = new CgCube();
-    //    for (int i = 0; i < m_cube->getFaceNormals().size(); i = i+2) {
-    //        m_polyLines.push_back(
-    //                    new CgPolyline(
-    //                        std::vector<glm::vec3> {m_cube->getFaceNormals().at(i), m_cube->getFaceNormals().at(i+1)},
-    //                        i)
-    //                    );
-    //    }
 
-    //    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
-    //        testPolyline = new CgPolyline(
-    //                    std::vector<glm::vec3> {
-    //                        glm::vec3(-1.5, 1.0, 0.0),
-    //                        glm::vec3(0.0, 0.5, 0.0),
-    //                        glm::vec3(1.5, 1.0, 0.0),
-    //                        glm::vec3(0.0, -1.5, 0.0),
-    //                        glm::vec3(-1.5, 1.0, 0.0)
-    //                    },
-    //                    300
-    //                    );
+//    m_triangle= new CgExampleTriangle(21);
+    m_cube = new CgCube();
+
+//    testPolyline = new CgPolyline(std::vector<glm::vec3> {glm::vec3(0.5, 0.5, 0.5), glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.5, -0.5, -0.5), glm::vec3(-0.5, 0.5, 0.0), glm::vec3(0.5, 0.5, 0.5)}, 200);
+//        testPolyline = new CgPolyline(
+//                    std::vector<glm::vec3> {
+//                        glm::vec3(-1.5, 1.0, 0.0),
+//                        glm::vec3(0.0, 0.5, 0.0),
+//                        glm::vec3(1.5, 1.0, 0.0),
+//                        glm::vec3(0.0, -1.5, 0.0),
+//                        glm::vec3(-1.5, 1.0, 0.0)
+//                    },
+//                    300
+//                    );
 
      testPolyline = new CgPolyline(std::vector<glm::vec3> {
                                                    glm::vec3(0.0, 1, 0.0),
@@ -74,29 +72,34 @@ CgSceneControl::CgSceneControl()
 //                                  glm::vec3(1.0, -0.9, 0.0),
 //                                  glm::vec3(1.0, -1, 0.0)
 //                              });
-    testRevolution->setRotationCurve(testPolyline->getVertices());
 
+    polyLineActive = false;
 
-    m_triangle_mesh = new CgTriangleMesh();
-    m_triangle_mesh->calculateNormals();
+    m_base_object = m_cube;
+//    m_triangle_mesh = new CgTriangleMesh();
+//    m_triangle_mesh->calculateNormals();
 
 }
 
 
 CgSceneControl::~CgSceneControl()
 {
-    if(m_triangle!=NULL)
-        delete m_triangle;
-    if(m_cube!=NULL)
-        delete m_cube;
-    if(!m_polyLines.empty())
-        for (auto poly : m_polyLines)
-            delete poly;
-    if(testPolyline!=NULL)
+//    if(m_triangle!=NULL)
+//        delete m_triangle;
+//    if(m_cube!=NULL)
+//        delete m_cube;
+//    if(!m_polyLines.empty())
+//        for (auto poly : m_polyLines)
+//            delete poly;
+//    if(testPolyline!=NULL)
+//        delete testPolyline;
+//    if(testRevolution!=NULL)
+//        delete testRevolution;
+//    delete m_triangle_mesh;
+    if (m_base_object != NULL)
+        delete m_base_object;
+    if (testPolyline != NULL)
         delete testPolyline;
-    if(testRevolution!=NULL)
-        delete testRevolution;
-    delete m_triangle_mesh;
 }
 
 void CgSceneControl::setRenderer(CgBaseRenderer* r)
@@ -104,39 +107,50 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
     m_renderer=r;
     m_renderer->setSceneControl(this);
 
-    if(m_triangle!=NULL)
-        m_renderer->init(m_triangle);
-    if(m_cube!=NULL) {
-        m_renderer->init(m_cube);
-        for (CgPolyline* line : m_cube->getFaceNormalPolylines()) {
-            m_renderer->init(line);
-        }
-        for (CgPolyline* line : m_cube->getVertexNormalPolylines()) {
-            m_renderer->init(line);
-        }
-    }
+//    if(m_triangle!=NULL)
+//        m_renderer->init(m_triangle);
+//    if(m_cube!=NULL) {
+//        m_renderer->init(m_cube);
+//        for (CgPolyline* line : m_cube->getFaceNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//        for (CgPolyline* line : m_cube->getVertexNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//    }
 
-    if(!m_polyLines.empty())
-        for (CgPolyline* poly : m_polyLines)
-            m_renderer->init(poly);
-//    if(testPolyline!=NULL)
-//        m_renderer->init(testPolyline);
-    if(testRevolution!=NULL) {
-        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
-            m_renderer->init(line);
-        }
-        for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
-            m_renderer->init(line);
-        }
-    }
+//    if(!m_polyLines.empty())
+//        for (CgPolyline* poly : m_polyLines)
+//            m_renderer->init(poly);
+////    if(testPolyline!=NULL)
+////        m_renderer->init(testPolyline);
+//    if(testRevolution!=NULL) {
+//        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//        for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//    }
 
-    m_renderer->init(m_triangle_mesh);
-    for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
+//    m_renderer->init(m_triangle_mesh);
+//    for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
+//        m_renderer->init(line);
+//    }
+//    for (CgPolyline* line : m_triangle_mesh->getVertexNormalPolylines()) {
+//        m_renderer->init(line);
+//    }        m_renderer->init(m_base_object);
+    m_renderer->init(m_base_object);
+    for (CgPolyline* line : m_base_object->getFaceNormalPolylines()) {
         m_renderer->init(line);
     }
-    for (CgPolyline* line : m_triangle_mesh->getVertexNormalPolylines()) {
+    for (CgPolyline* line : m_base_object->getVertexNormalPolylines()) {
         m_renderer->init(line);
     }
+    m_renderer->init(testPolyline);
+
+
+
 
 }
 
@@ -175,45 +189,73 @@ void CgSceneControl::renderObjects()
     m_renderer->setUniformValue("modelviewMatrix",mv_matrix);
     m_renderer->setUniformValue("normalMatrix",normal_matrix);
 
-    if(m_triangle!=NULL)
-        m_renderer->render(m_triangle);
-    if(m_cube!=NULL) {
-        m_renderer->render(m_cube);
-        for (CgPolyline* line : m_cube->getFaceNormalPolylines()) {
+//    if(m_triangle!=NULL)
+//        m_renderer->render(m_triangle);
+//    if(m_cube!=NULL) {
+//        m_renderer->render(m_cube);
+//        for (CgPolyline* line : m_cube->getFaceNormalPolylines()) {
+//            m_renderer->render(line);
+//        }
+//        for (CgPolyline* line : m_cube->getVertexNormalPolylines()) {
+//            m_renderer->render(line);
+//        }
+//    }
+
+//    if(!m_polyLines.empty())
+//        for (CgPolyline* poly : m_polyLines)
+//            m_renderer->render(poly);
+////    if(testPolyline!=NULL)
+////        m_renderer->render(testPolyline);
+//    if(testRevolution!=NULL) {
+//        m_renderer->render(testRevolution);
+//        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
+//            m_renderer->render(line);
+//        }
+//        for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
+//            m_renderer->render(line);
+//        }
+//    }
+
+
+    if (polyLineActive) {
+        std::cout << polyLineActive << std::endl;
+        m_renderer->render(testPolyline);
+    } else {
+        m_renderer->render(m_base_object);
+        for (CgPolyline* line : m_base_object->getFaceNormalPolylines()) {
             m_renderer->render(line);
         }
-        for (CgPolyline* line : m_cube->getVertexNormalPolylines()) {
+        for (CgPolyline* line : m_base_object->getVertexNormalPolylines()) {
             m_renderer->render(line);
         }
     }
 
-    if(!m_polyLines.empty())
-        for (CgPolyline* poly : m_polyLines)
-            m_renderer->render(poly);
-//    if(testPolyline!=NULL)
-//        m_renderer->render(testPolyline);
-    if(testRevolution!=NULL) {
-        m_renderer->render(testRevolution);
-        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
-            m_renderer->render(line);
-        }
-        for (CgPolyline* line : testRevolution->getVertexNormalPolylines()) {
-            m_renderer->render(line);
-        }
-    }
-
-    m_renderer->render(m_triangle_mesh);
-    for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
-        m_renderer->render(line);
-    }
-    for (CgPolyline* line : m_triangle_mesh->getVertexNormalPolylines()) {
-        m_renderer->render(line);
-    }
 
 }
 
 void CgSceneControl::handleEvent(CgBaseEvent* e)
 {
+    if (e->getType() == Cg::CgRenderObjectEvent) {
+        CgRenderObjectEvent* ev = (CgRenderObjectEvent*) e;
+        std::cout << "RenderButton: " << ev->getButtonNumber() << std::endl;
+        if (ev->getButtonNumber() == 0) {
+            polyLineActive = false;
+            m_base_object = m_cube;
+            m_renderer->init(m_base_object);
+        } else if (ev->getButtonNumber() == 1) {
+            polyLineActive = true;
+            m_renderer->init(testPolyline);
+
+        } else {
+            polyLineActive = false;
+
+            m_base_object = testRevolution;
+            m_renderer->init(m_base_object);
+        }
+        m_renderer->redraw();
+
+    }
+
     if (e->getType() & Cg::CgColorChangeEvent) {
         CgColorChangeEvent* ev = (CgColorChangeEvent*) e;
         if(!m_polyLines.empty())
@@ -230,12 +272,16 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
     if (e->getType() & Cg::CgSubdivideEvent) {
         CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
         testPolyline->setMaxSubdivision(ev->getValue());
+        std::cout << "SUBDIVIDE EVENT" << std::endl;
 
     }
 
     if (e->getType() & Cg::CgRevolutionSegmentsEvent) {
         CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
         testRevolution->setRotationSteps(ev->getValue());
+        std::cout << "REVOLUTION SEGMENTS EVENT" << std::endl;
+
+
     }
 
     if (e->getType() & Cg::CgButtonClicked) {
@@ -243,13 +289,19 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
         if (ev->getButtonEventType() == Cg::MakeStep) {
             testPolyline->applyLaneRiesenfeld(1);
-//            m_renderer->init(testPolyline);
+            std::cout << "MAKE STEP EVENT" << std::endl;
+
+            m_renderer->init(testPolyline);
             m_renderer->redraw();
         } else if (ev->getButtonEventType() == Cg::ClearSteps) {
+            std::cout << "CLEAR STEP EVENT" << std::endl;
+
             testPolyline->reset();
             m_renderer->init(testPolyline);
             m_renderer->redraw();
         } else if (ev->getButtonEventType() == Cg::GenerateRevolution) {
+            std::cout << "GENERATRE REVOLUTION EVENT" << std::endl;
+
             testRevolution->setRotationCurve(testPolyline->getVertices());
             testRevolution->createRotationBody();
             m_renderer->init(testRevolution);
@@ -359,10 +411,15 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 //        m_triangle->init(pos,norm,indx);
 //        m_renderer->init(m_triangle);
 
-        m_triangle_mesh->init(pos, norm, indx);
-        m_triangle_mesh->calculateNormals();
-
-        m_renderer->init(m_triangle_mesh);
+        m_base_object->init(pos, norm, indx);
+        m_base_object->calculateNormals();
+        for (CgPolyline* line : m_base_object->getFaceNormalPolylines()) {
+            m_renderer->init(line);
+        }
+        for (CgPolyline* line : m_base_object->getVertexNormalPolylines()) {
+            m_renderer->init(line);
+        }
+        m_renderer->init(m_base_object);
 
 //        for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
 //            m_renderer->init(line);

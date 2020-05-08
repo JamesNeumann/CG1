@@ -32,7 +32,7 @@ typedef enum EventType {
     CgSubdivideEvent                = 0x0002000,
     CgButtonClicked                 = 0x0004000,
     CgRevolutionSegmentsEvent       = 0x0008000,
-    CgEventGroup1                   = 0x000f000,
+    CgRenderObjectEvent             = 0x000f000,
 
     // feel free to add whatever you like
 }EventType;
