@@ -15,6 +15,8 @@
 #include "CgPolyline.h"
 #include "CgSolidOfRevolution.h"
 #include "CgTriangleMesh.h"
+#include "CgScenegraph.h"
+#include "CgScenegraphEntity.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include "CgUtils/ObjLoader.h"
@@ -28,6 +30,9 @@ CgSceneControl::CgSceneControl()
     testRevolution = NULL;
 
     m_base_object = NULL;
+
+
+    m_scenegraph = NULL;
 
     m_current_transformation=glm::mat4(1.);
     glm::mat4 scalemat = glm::mat4(1.);
@@ -74,7 +79,7 @@ CgSceneControl::CgSceneControl()
 //                              });
 
     polyLineActive = false;
-
+    scenegraphActive = false;
     m_base_object = m_cube;
 //    m_triangle_mesh = new CgTriangleMesh();
 //    m_triangle_mesh->calculateNormals();
@@ -100,6 +105,8 @@ CgSceneControl::~CgSceneControl()
         delete m_base_object;
     if (testPolyline != NULL)
         delete testPolyline;
+    if (m_scenegraph != NULL)
+        delete m_scenegraph;
 }
 
 void CgSceneControl::setRenderer(CgBaseRenderer* r)
@@ -152,6 +159,8 @@ void CgSceneControl::setRenderer(CgBaseRenderer* r)
 
 
 
+
+
 }
 
 
@@ -182,8 +191,11 @@ void CgSceneControl::renderObjects()
 
 
 
-    glm::mat4 mv_matrix = m_lookAt_matrix * m_trackball_rotation* m_current_transformation ;
+    glm::mat4 mv_matrix = m_lookAt_matrix * m_trackball_rotation * m_current_transformation ;
     glm::mat3 normal_matrix = glm::transpose(glm::inverse(glm::mat3(mv_matrix)));
+
+
+    glm::mat4 sceneMatrix = m_lookAt_matrix * m_trackball_rotation;
 
     m_renderer->setUniformValue("projMatrix",m_proj_matrix);
     m_renderer->setUniformValue("modelviewMatrix",mv_matrix);
@@ -206,7 +218,8 @@ void CgSceneControl::renderObjects()
 //            m_renderer->render(poly);
 ////    if(testPolyline!=NULL)
 ////        m_renderer->render(testPolyline);
-//    if(testRevolution!=NULL) {
+//    if(testRevolution!=NULL) {            m_base_object = testRevolution;
+    m_renderer->init(m_base_object);
 //        m_renderer->render(testRevolution);
 //        for (CgPolyline* line : testRevolution->getFaceNormalPolylines()) {
 //            m_renderer->render(line);
@@ -216,11 +229,16 @@ void CgSceneControl::renderObjects()
 //        }
 //    }
 
-
     if (polyLineActive) {
         std::cout << polyLineActive << std::endl;
         m_renderer->render(testPolyline);
-    } else {
+    } else if (scenegraphActive) {
+        std::cout << "Scenegrapgactive:" << scenegraphActive << std::endl;
+
+        m_scenegraph->renderSceneGraph(m_renderer, mv_matrix);
+
+    }
+    else {
         m_renderer->render(m_base_object);
         for (CgPolyline* line : m_base_object->getFaceNormalPolylines()) {
             m_renderer->render(line);
@@ -242,21 +260,93 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
             polyLineActive = false;
             m_base_object = m_cube;
             m_renderer->init(m_base_object);
-        } else if (ev->getButtonNumber() == 1) {
+        }
+        if (ev->getButtonNumber() == 1) {
             polyLineActive = true;
             m_renderer->init(testPolyline);
-
-        } else {
+        }
+        if (ev->getButtonNumber() == 2){
             polyLineActive = false;
-
+            scenegraphActive = false;
             m_base_object = testRevolution;
             m_renderer->init(m_base_object);
         }
+        if (ev->getButtonNumber() == 3){
+            std::cout << "SCENEGRAPH RENDER" << std::endl;
+            polyLineActive = false;
+            scenegraphActive = true;
+            CgScenegraphEntity* root = new CgScenegraphEntity(m_current_transformation);
+            m_scenegraph = new CgScenegraph(root);
+            CgCube* cube = new CgCube();
+            m_renderer->init(cube);
+            glm::mat4x4 yRotation = {{glm::cos(1), 0, -glm::sin(1), 0}, {0, 1, 0, 0}, {glm::sin(1), 0, glm::cos(1), 0}, {0, 0, 0, 1}};
+            glm::mat4x4 translation = {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
+                {0, 2, 2, 1},
+            };
+
+            glm::mat4x4 translation2 = {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
+                {0, -2, -2, 1},
+            };
+            glm::mat4x4 translation3 = {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
+                {2, 0, 2, 1},
+            };
+            glm::mat4x4 translation4 = {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
+                {2, -2, 0, 1},
+            };
+            glm::mat4x4 translation5 = {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
+                {2, -2, 2, 1},
+            };
+            m_scenegraph->getRootEntity()->addObject(cube);
+            CgScenegraphEntity* child = new CgScenegraphEntity(translation);
+            child->addObject(m_cube);
+            m_scenegraph->getRootEntity()->addChildren(child);
+
+            CgScenegraphEntity* child2 = new CgScenegraphEntity(translation2);
+            child2->addObject(m_cube);
+            m_scenegraph->getRootEntity()->addChildren(child2);
+
+            CgScenegraphEntity* child3 = new CgScenegraphEntity(translation3);
+            child3->addObject(m_cube);
+            m_scenegraph->getRootEntity()->addChildren(child3);
+
+            CgScenegraphEntity* child4 = new CgScenegraphEntity(translation4);
+            child4->addObject(m_cube);
+            m_scenegraph->getRootEntity()->addChildren(child4);
+
+            CgScenegraphEntity* child5 = new CgScenegraphEntity(translation5);
+            child5->addObject(m_cube);
+            m_scenegraph->getRootEntity()->addChildren(child5);
+
+            CgScenegraphEntity* child6 = new CgScenegraphEntity(translation5);
+            child6->addObject(m_cube);
+            child5->addChildren(child6);
+
+
+
+//            m_scenegraph->getRootEntity()->addObject(testPolyline);
+
+        }
         m_renderer->redraw();
+
 
     }
 
-    if (e->getType() & Cg::CgColorChangeEvent) {
+    else if (e->getType() & Cg::CgColorChangeEvent) {
         CgColorChangeEvent* ev = (CgColorChangeEvent*) e;
         if(!m_polyLines.empty())
             for (CgPolyline* poly : m_polyLines) {
@@ -269,14 +359,14 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
         m_renderer->redraw();
     }
 
-    if (e->getType() & Cg::CgSubdivideEvent) {
+    else if (e->getType() & Cg::CgSubdivideEvent) {
         CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
         testPolyline->setMaxSubdivision(ev->getValue());
         std::cout << "SUBDIVIDE EVENT" << std::endl;
 
     }
 
-    if (e->getType() & Cg::CgRevolutionSegmentsEvent) {
+    else if (e->getType() & Cg::CgRevolutionSegmentsEvent) {
         CgSubdivideEvent* ev = (CgSubdivideEvent*) e;
         testRevolution->setRotationSteps(ev->getValue());
         std::cout << "REVOLUTION SEGMENTS EVENT" << std::endl;
@@ -284,7 +374,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
     }
 
-    if (e->getType() & Cg::CgButtonClicked) {
+    else if (e->getType() & Cg::CgButtonClicked) {
         CgButtonClickedEvent* ev = (CgButtonClickedEvent*) e;
 
         if (ev->getButtonEventType() == Cg::MakeStep) {
@@ -331,7 +421,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
     // die Enums sind so gebaut, dass man alle Arten von MausEvents über CgEvent::CgMouseEvent abprüfen kann,
     // siehe dazu die CgEvent enums im CgEnums.
-    if(e->getType() & Cg::CgMouseEvent)
+    else if(e->getType() & Cg::CgMouseEvent)
     {
         CgMouseEvent* ev = (CgMouseEvent*)e;
         //std::cout << *ev << std::endl;
@@ -340,7 +430,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
     }
 
 
-    if(e->getType() & Cg::CgTrackballEvent)
+    else if(e->getType() & Cg::CgTrackballEvent)
     {
         CgTrackballEvent* ev = (CgTrackballEvent*)e;
 
@@ -355,7 +445,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
     // siehe dazu die CgEvent enums im CgEnums.h
     // momentan werden nur KeyPressEvents gefangen.
 
-    if(e->getType() & Cg::CgKeyEvent)
+    else if(e->getType() & Cg::CgKeyEvent)
     {
         CgKeyEvent* ev = (CgKeyEvent*)e;
         std::cout << *ev <<std::endl;
@@ -379,7 +469,7 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
         // hier kommt jetzt die Abarbeitung des Events hin...
     }
 
-    if(e->getType() & Cg::WindowResizeEvent)
+    else if(e->getType() & Cg::WindowResizeEvent)
     {
         CgWindowResizeEvent* ev = (CgWindowResizeEvent*)e;
         std::cout << *ev <<std::endl;

@@ -157,11 +157,14 @@ QGroupBox* CgQtGui::createObjectSelectPanel()
     connect(radio2, SIGNAL(clicked(bool)), this, SLOT(radioButtonChanged()));
     radio3 = new QRadioButton(tr("Rotatioskörper"));
     connect(radio3, SIGNAL(clicked(bool)), this, SLOT(radioButtonChanged()));
+    radio4 = new QRadioButton(tr("Scenegraph"));
+    connect(radio4, SIGNAL(clicked(bool)), this, SLOT(radioButtonChanged()));
 
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(radio1);
     vbox->addWidget(radio2);
     vbox->addWidget(radio3);
+    vbox->addWidget(radio4);
     groupBox->setLayout(vbox);
 
     return groupBox;
@@ -411,8 +414,13 @@ void CgQtGui::radioButtonChanged() {
         riesenFeldControl->setVisible(true);
         rotationControl->setVisible(true);
         e = new CgRenderObjectEvent(Cg::CgRenderObjectEvent, 2);
-
     }
+    if (radio4->isChecked()) {
+        riesenFeldControl->setVisible(true);
+        rotationControl->setVisible(false);
+        e = new CgRenderObjectEvent(Cg::CgRenderObjectEvent, 3);
+    }
+
     notifyObserver(e);
 }
 

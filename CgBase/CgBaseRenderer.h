@@ -2,6 +2,7 @@
 #define CGBASERENDERER
 
 #include <glm/glm.hpp>
+#include <string>
 class CgBaseRenderableObject;
 class CgBaseSceneControl;
 class CgBaseImage;
@@ -26,7 +27,7 @@ class CgBaseRenderer
      virtual void setUniformValue(std::string,double)=0;
      virtual void setUniformValue(std::string,int)=0;
 
-        virtual void redraw()=0;
+    virtual void redraw()=0;
 
      // for saving image files
      virtual void writeImageToFile(CgBaseImage* image,std::string filename)=0;

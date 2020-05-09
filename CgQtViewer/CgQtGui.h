@@ -133,6 +133,7 @@ private:
     QRadioButton *radio1;
     QRadioButton *radio2;
     QRadioButton *radio3;
+    QRadioButton *radio4;
 
     int step = 1;
     int maxSteps = 1;

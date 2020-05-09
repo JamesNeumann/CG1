@@ -27,7 +27,10 @@ SOURCES += main.cpp \
     CgSceneGraph/CgTriangleMesh.cpp \
     CgUtils/IdGenerator.cpp \
     CgSceneGraph/CgSolidOfRevolution.cpp \
-    CgEvents/CgRenderObjectEvent.cpp
+    CgEvents/CgRenderObjectEvent.cpp \
+    CgSceneGraph/CgScenegraphEntity.cpp \
+    CgSceneGraph/CgAppearance.cpp \
+    CgSceneGraph/CgScenegraph.cpp
 
 HEADERS += \
     CgQtViewer/CgQtGLRenderWidget.h \
@@ -64,5 +67,8 @@ HEADERS += \
     CgSceneGraph/CgTriangleMesh.h \
     CgUtils/IdGenerator.h \
     CgSceneGraph/CgSolidOfRevolution.h \
-    CgEvents/CgRenderObjectEvent.h
+    CgEvents/CgRenderObjectEvent.h \
+    CgSceneGraph/CgScenegraphEntity.h \
+    CgSceneGraph/CgAppearance.h \
+    CgSceneGraph/CgScenegraph.h
 

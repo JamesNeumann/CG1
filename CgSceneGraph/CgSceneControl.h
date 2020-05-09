@@ -15,6 +15,10 @@ class CgPolyline;
 class CgSolidOfRevolution;
 class CgTriangleMesh;
 
+
+class CgScenegraph;
+
+
 class CgSceneControl : public CgObserver, public CgBaseSceneControl
 {
 public:
@@ -30,8 +34,13 @@ public:
 private:
 
     bool polyLineActive;
+    bool scenegraphActive;
 
     CgBaseRenderer* m_renderer;
+
+
+    CgScenegraph* m_scenegraph;
+
 
     CgExampleTriangle* m_triangle;
     CgCube* m_cube;
