@@ -1,11 +1,14 @@
 #include "CgScenegraph.h"
 
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 CgScenegraph::CgScenegraph(CgScenegraphEntity* root)
 {
     m_root_node = root;
     m_modelview_matrix_stack.push(m_root_node->getCurrentTransformation());
+    srand(time(NULL));
 }
 
 void CgScenegraph::renderSceneGraph(CgBaseRenderer *renderer, glm::mat4 sceneMatrix) {
@@ -17,7 +20,7 @@ void CgScenegraph::render(CgBaseRenderer* renderer, CgScenegraphEntity* entity, 
     renderer->setUniformValue("modelviewMatrix",sceneMatrix);
 
     for(auto obj : entity->getListOfObjects()) {
-
+        renderer->setUniformValue("mycolor", glm::vec4(((double) rand() / (RAND_MAX)), ((double) rand() / (RAND_MAX)), ((double) rand() / (RAND_MAX)), 1));
         renderer->render(obj);
 
     }
