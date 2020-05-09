@@ -311,30 +311,56 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
                 {0, 0, 1, 0},
                 {2, -2, 2, 1},
             };
-            m_scenegraph->getRootEntity()->addObject(cube);
-            CgScenegraphEntity* child = new CgScenegraphEntity(translation);
-            child->addObject(m_cube);
-            m_scenegraph->getRootEntity()->addChildren(child);
 
-            CgScenegraphEntity* child2 = new CgScenegraphEntity(translation2);
-            child2->addObject(m_cube);
-            m_scenegraph->getRootEntity()->addChildren(child2);
+//            m_scenegraph->getRootEntity()->addObject(cube);
+            for (double i = 0; i < 1; i += 0.01) {
+                std::cout << i << std::endl;
+                glm::mat4x4 scale = {
+                    {i, 0, 0, 0},
+                    {0, i, 0, 0},
+                    {0, 0, i, 0},
+                    {0, 0, 0, 1}
+                };
+                glm::mat4x4 rotate = {
+                    {glm::cos(i), 0, -glm::sin(i), 0},
+                    {0, 1, 0, 0},
+                    {glm::sin(i), 0, glm::cos(i), 0},
+                    {0, 0, 0, 1}
+                };
+//                glm::mat4x4 translation = {
+//                    {1, 0, 0, 0},
+//                    {0, 1, 0, 0},
+//                    {0, 0, 1, 0},
+//                    {i, i, i, 1},
+//                };
+                CgScenegraphEntity* child = new CgScenegraphEntity(rotate*scale);
+                child->addObject(m_cube);
+                m_scenegraph->getRootEntity()->addChildren(child);
+            }
+//            m_scenegraph->getRootEntity()->addObject(cube);
+//            CgScenegraphEntity* child = new CgScenegraphEntity(scale1);
+//            child->addObject(m_cube);
+//            m_scenegraph->getRootEntity()->addChildren(child);
 
-            CgScenegraphEntity* child3 = new CgScenegraphEntity(translation3);
-            child3->addObject(m_cube);
-            m_scenegraph->getRootEntity()->addChildren(child3);
+//            CgScenegraphEntity* child2 = new CgScenegraphEntity(scale2);
+//            child2->addObject(m_cube);
+//            m_scenegraph->getRootEntity()->addChildren(child2);
 
-            CgScenegraphEntity* child4 = new CgScenegraphEntity(translation4);
-            child4->addObject(m_cube);
-            m_scenegraph->getRootEntity()->addChildren(child4);
+//            CgScenegraphEntity* child3 = new CgScenegraphEntity(scale3);
+//            child3->addObject(m_cube);
+//            m_scenegraph->getRootEntity()->addChildren(child3);
 
-            CgScenegraphEntity* child5 = new CgScenegraphEntity(translation5);
-            child5->addObject(m_cube);
-            m_scenegraph->getRootEntity()->addChildren(child5);
+//            CgScenegraphEntity* child4 = new CgScenegraphEntity(scale4);
+//            child4->addObject(m_cube);
+//            m_scenegraph->getRootEntity()->addChildren(child4);
 
-            CgScenegraphEntity* child6 = new CgScenegraphEntity(translation5);
-            child6->addObject(m_cube);
-            child5->addChildren(child6);
+//            CgScenegraphEntity* child5 = new CgScenegraphEntity(scale5);
+//            child5->addObject(m_cube);
+//            m_scenegraph->getRootEntity()->addChildren(child5);
+
+//            CgScenegraphEntity* child6 = new CgScenegraphEntity(translation5);
+//            child6->addObject(m_cube);
+//            child5->addChildren(child6);
 
 
 
@@ -500,16 +526,20 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
 
 //        m_triangle->init(pos,norm,indx);
 //        m_renderer->init(m_triangle);
+        CgTriangleMesh* loadedMesh = new CgTriangleMesh();
+        loadedMesh->init(pos, norm, indx);
 
-        m_base_object->init(pos, norm, indx);
-        m_base_object->calculateNormals();
-        for (CgPolyline* line : m_base_object->getFaceNormalPolylines()) {
-            m_renderer->init(line);
-        }
-        for (CgPolyline* line : m_base_object->getVertexNormalPolylines()) {
-            m_renderer->init(line);
-        }
-        m_renderer->init(m_base_object);
+//        m_base_object->init(pos, norm, indx);
+//        m_base_object->calculateNormals();
+//        for (CgPolyline* line : m_base_object->getFaceNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//        for (CgPolyline* line : m_base_object->getVertexNormalPolylines()) {
+//            m_renderer->init(line);
+//        }
+//        m_renderer->init(m_base_object);
+        m_renderer->init(loadedMesh);
+        m_scenegraph->getRootEntity()->addObject(loadedMesh);
 
 //        for (CgPolyline* line : m_triangle_mesh->getFaceNormalPolylines()) {
 //            m_renderer->init(line);

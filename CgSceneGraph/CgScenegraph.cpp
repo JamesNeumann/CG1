@@ -24,7 +24,6 @@ void CgScenegraph::render(CgBaseRenderer* renderer, CgScenegraphEntity* entity, 
         renderer->render(obj);
 
     }
-    std::cout << "Scenegraph Render object" <<std::endl;
 
     pushMatrix();
 
